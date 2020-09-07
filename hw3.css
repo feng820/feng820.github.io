@@ -1,0 +1,112 @@
+/* *{
+    margin: 0;
+    padding: 0;
+} */
+.header {
+    color: rgb(31, 72, 207);
+    margin-left: 60px;
+    margin-top: 30px;
+    font-size: 47px;
+    font-family: 'Rozha One', serif;
+    width: 93px;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+hr {
+    margin-left: -10px;
+    margin-right: -10px;
+}
+
+.nav-bar {
+    margin-left: 20px;
+    margin-top: 30px;
+    list-style-type: none;
+    font-family: sans-serif;
+    font-size: 13px;
+    width: 540px;
+}
+
+.nav-bar li {
+    display: inline;
+}
+
+.nav-bar li:first-child {
+    color: rgb(13, 102, 235)
+}
+
+.nav-bar li:nth-child(n+2) {
+    padding-left: 20px;
+}
+
+.recommendation {
+    position: relative;
+    margin-left: 60px;
+    margin-top: 40px;
+
+}
+
+.cultery {
+    width: 1202px;
+    height: 674px;
+    background-image: url('http://csci571.com/hw/hw3/images/Cutlery.png');
+    background-attachment: fixed;
+    background-position-x: 68px;
+    background-position-y: -89px;
+    background-repeat: no-repeat;
+}
+
+.collection {
+    position: absolute;
+    width: 380px;
+    top: 64px;
+    left: 62px;
+    color: rgba(31, 72, 207, 0.9);
+    font-weight: bold;
+    font-size: 63px;
+    line-height: 90px;
+    font-family: 'Rozha One', serif;
+}
+
+.shop-btn {
+    position: absolute;
+    top: 313px;
+    left: 65px;
+    background-color: white;
+    width: 132px;
+    height: 54px;
+    text-align: center;
+    line-height: 55px;
+    font-family: sans-serif;
+    font-size: 18px;
+}
+
+.middle-text {
+    margin: 50px 500px 40px 494px;
+    color: rgb(31, 72, 207);
+    font-size: 34px;
+    width: 425px;
+    font-family: 'Rozha One', serif;
+}
+
+.picture-container {
+    margin-left: 60px;
+    position: relative;
+    display: grid;
+    grid-template-columns: 581px 581px;
+    grid-column-gap: 60px;
+}
+
+.picture {
+    padding-right: 20px;
+    background-color: lightblue;
+}
+
+.text {
+    text-align: center;
+    color: rgb(31, 72, 207);
+    font-size: 26px;
+    margin-top: 50px;
+    margin-bottom: 70px;
+    font-family: 'Rozha One', serif;
+}
