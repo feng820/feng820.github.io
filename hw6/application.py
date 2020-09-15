@@ -54,7 +54,7 @@ def get_stock_summary(ticker):
                         'change': change,
                         'changePercent': round(abs(change) / open_price * 100, 2),
                         'volume': data.get('volume'),
-                        'last': last_price}
+                        }
     return json.dumps(tabular_data)
 
 
@@ -65,15 +65,18 @@ def get_stock_history(ticker):
                  '&resampleFreq=12hour&columns=open,high,low,close,volume' + '&token=' + TIINGO_API_KEY
     json_response = requests.get(target_url).content
     data = json.loads(json_response)
+    date_array = []
     price_array = []
     volume_array = []
     for history in data:
         history_date = history.get('date').split('T')[0]
         stock_price = history.get('close')
         volume = history.get('volume')
-        price_array.append((history_date, stock_price))
-        volume_array.append((history_date, volume))
+        date_array.append(history_date)
+        price_array.append(stock_price)
+        volume_array.append(volume)
     tabular_data = {'today_date': str(date.today()),
+                    'date_array': date_array,
                     'price_array': price_array,
                     'volume_array': volume_array,
                     }
