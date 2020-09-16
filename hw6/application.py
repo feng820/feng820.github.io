@@ -1,8 +1,8 @@
 from flask import Flask
+from flask import jsonify
 from datetime import date
 from dateutil.relativedelta import relativedelta
 import requests
-import json
 
 TIINGO_API_KEY = 'ce4fc028989a34eaf097d57dfd14d50604c63cbd'
 NEWS_API_KEY = 'dfebb169ecb64e2ebb9823dcd0b60c44'
@@ -19,31 +19,28 @@ def index():
 @application.route('/outlook/<ticker>')
 def get_company_outlook(ticker):
     target_url = 'https://api.tiingo.com/tiingo/daily/' + ticker + '?token=' + TIINGO_API_KEY
-    json_response = requests.get(target_url).content
-    data = json.loads(json_response)
+    data = requests.get(target_url).json()
     error_msg = data.get('detail')
     if error_msg:
-        return json.dumps({'error': error_msg})
+        return jsonify({'error': error_msg})
     else:
         tabular_data = {'name': data.get('name'),
                         'ticker': data.get('ticker'),
                         'exchangeCode': data.get('exchangeCode'),
                         'startDate': data.get('startDate'),
                         'description': data.get('description')}
-        return json.dumps(tabular_data)
+        return jsonify(tabular_data)
 
 
 @application.route('/summary/<ticker>')
 def get_stock_summary(ticker):
     target_url = 'https://api.tiingo.com/iex/' + ticker + '?token=' + TIINGO_API_KEY
-    json_response = requests.get(target_url).content
-    data = json.loads(json_response)
+    data = requests.get(target_url).json()
     tabular_data = {}
     if len(data) > 0:
         data = data[0]
         open_price = data.get('open')
         last_price = data.get('last')
-        # TODO: round??
         change = round(last_price - open_price, 2)
         tabular_data = {'ticker': data.get('ticker'),
                         'timestamp': data.get('timestamp').split('T')[0],
@@ -55,7 +52,7 @@ def get_stock_summary(ticker):
                         'changePercent': round(abs(change) / open_price * 100, 2),
                         'volume': data.get('volume'),
                         }
-    return json.dumps(tabular_data)
+    return jsonify(tabular_data)
 
 
 @application.route('/history/<ticker>')
@@ -63,8 +60,7 @@ def get_stock_history(ticker):
     six_months_ago = date.today() + relativedelta(months=-6)
     target_url = 'https://api.tiingo.com/iex/' + ticker + '/prices' + '?startDate=' + str(six_months_ago) + \
                  '&resampleFreq=12hour&columns=open,high,low,close,volume' + '&token=' + TIINGO_API_KEY
-    json_response = requests.get(target_url).content
-    data = json.loads(json_response)
+    data = requests.get(target_url).json()
     date_array = []
     price_array = []
     volume_array = []
@@ -80,14 +76,13 @@ def get_stock_history(ticker):
                     'price_array': price_array,
                     'volume_array': volume_array,
                     }
-    return json.dumps(tabular_data)
+    return jsonify(tabular_data)
 
 
 @application.route('/news/<ticker>')
 def get_stock_news(ticker):
     target_url = 'https://newsapi.org/v2/everything?q=' + ticker + '&apiKey=' + NEWS_API_KEY
-    json_response = requests.get(target_url).content
-    data = json.loads(json_response)
+    data = requests.get(target_url).json()
 
     top_five_articles = []
     try:
@@ -105,8 +100,8 @@ def get_stock_news(ticker):
                 break
     except KeyError:
         err_msg = {'error': 'Not found'}
-        return json.dumps(err_msg)
-    return json.dumps(top_five_articles)
+        return jsonify(err_msg)
+    return jsonify(top_five_articles)
 
 
 # run the app.
