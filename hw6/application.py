@@ -111,6 +111,4 @@ def get_stock_news(ticker):
 
 # run the app.
 if __name__ == "__main__":
-    # TODO: remove before deployment
-    application.debug = True
     application.run()
