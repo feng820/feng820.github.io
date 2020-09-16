@@ -94,7 +94,13 @@ def get_stock_news(ticker):
         articles = data['articles']
         for article in articles:
             if article.get('title') and article.get('url') and article.get('urlToImage') and article.get('publishedAt'):
-                top_five_articles.append(article)
+                tabular_data = {
+                    'image': article.get('urlToImage'),
+                    'title': article.get('title'),
+                    'date': article.get('publishedAt'),
+                    'url': article.get('url')
+                }
+                top_five_articles.append(tabular_data)
             if len(top_five_articles) == 5:
                 break
     except KeyError:

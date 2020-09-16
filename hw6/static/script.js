@@ -1,4 +1,6 @@
 addEventListenerForButton = (id) => {
+    // press the button will add border to it
+    // dismiss the border on the next mouse click
     document.getElementById(id).addEventListener("click", (e) => {
         const button = document.getElementById(id);
         button.className += ' active';
@@ -28,13 +30,61 @@ changeTab = (tabName, index) => {
     allTabLinks[index].className += ' active';
 }
 
+clearAll = (keepInput=false) => {
+    if (!keepInput) {
+        document.getElementById('search-bar').value = "";
+    }
+    document.getElementById('tab-options').style.display = 'none';
+    document.getElementById('error').style.display = 'none';
+    const allTabContent = document.getElementsByClassName('tab-content')
+    for (let i = 0; i < allTabContent.length; i++) {
+        allTabContent[i].style.display = "none";
+    }
+}
+
+showWarningBox = () => {
+    const warningBox = document.getElementById('warning-box')
+    const searchBar = document.getElementById('search-bar');
+    warningBox.style.display = 'block';
+    searchBar.focus();
+
+    // next mouse click or keyboard input will dismiss the warning
+    searchBar.addEventListener('keydown', (e) => {
+        warningBox.style.display = 'none';
+    }, {once: true});
+    document.addEventListener('mousedown', (e) => {
+        warningBox.style.display = 'none';
+    }, {once: true})
+}
+
+// fetch data
+document.getElementById('search-form').addEventListener("submit", (e) => {
+    e.preventDefault();
+    const ticker = document.getElementById('search-bar').value;
+    if (ticker.length === 0) {
+        showWarningBox();
+    } else {
+        clearAll(true);
+        fetch('/outlook/' + ticker)
+            .then(res => res.json())
+            .then((data) => {
+                if (data.hasOwnProperty('error')) {
+                    document.getElementById('error').style.display = 'block';
+                } else {
+                    document.getElementById('error').style.display = 'none';
+                    initDefaultView(data);
+                    initSummaryView(ticker);
+                    initChartsView(ticker);
+                    initNewsView(ticker);
+                }
+            });
+        }
+});
+
 initDefaultView = (data) => {
     tickerName = data['ticker'];
-
     document.getElementById('tab-options').style.display = 'block';
-    document.getElementById('outlook').style.display = 'block';
-
-    document.getElementsByClassName('tab-links')[0].className += ' active';
+    changeTab('outlook', 0);
     const dataList = document.getElementById('outlook').getElementsByClassName('data');
     dataList[0].innerHTML = data['name'];
     dataList[1].innerHTML = tickerName;
@@ -63,7 +113,7 @@ initSummaryView = (ticker) => {
         dataList[4].innerHTML = summaryData['high'];
         dataList[5].innerHTML = summaryData['low'];
         dataList[6].innerHTML = change;
-        dataList[7].innerHTML = summaryData['changePercent'];
+        dataList[7].innerHTML = summaryData['changePercent'] + '%';
         dataList[8].innerHTML = summaryData['volume'];
 
         if (change !== 0) {
@@ -180,27 +230,45 @@ initChartsView = (ticker) => {
 
 }
 
-// fetch data
-document.getElementById('search-form').addEventListener("submit", (e) => {
-    e.preventDefault();
-    const ticker = document.getElementById('search-bar').value;
-    if (ticker.length === 0) {
-        alert('invalid')
-    }
-    fetch('/outlook/' + ticker)
-        .then(res => res.json())
-        .then((data) => {
-            if (data.hasOwnProperty('error')) {
+initNewsView = (ticker) => {
+    fetch('/news/' + ticker)
+    .then(res => res.json())
+    .then((newsData) => {
+        if (!newsData.hasOwnProperty('error')) {
+            const tab = document.getElementById('news');
+            const ul = document.createElement('ul');
+            tab.innerHTML = "";
+            tab.appendChild(ul);
+            let li, img, div, title, link
+            for (let i = 0; i < newsData.length; i++) {
+                li = document.createElement('li');
+                img = document.createElement('img');
+                div = document.createElement('div');
+                title = document.createElement('b');
+                link = document.createElement('a');
 
-            } else {
-                initDefaultView(data);
-                initSummaryView(ticker);
-                initChartsView(ticker);
+                const article = newsData[i];
+                let UTC = article['date'];
+                UTC = UTC.split('T')[0];
+                UTC = UTC.split('-');
+                const date = UTC[1] + '/' + UTC[2] + '/' + UTC[0];
+
+                img.src = article['image'];
+                link.href = article['url'];
+                link.style.textDecoration = 'underline';
+                link.style.color = 'purple';
+                title.innerHTML = article['title'];
+                div.appendChild(title);
+                div.innerHTML += "<br/>"
+                div.innerHTML += "Published Date: " + date;
+                div.innerHTML += "<br/>"
+                link.innerHTML = "See Original Post"
+                div.appendChild(link);
+                li.appendChild(img);
+                li.appendChild(div);
+                ul.appendChild(li);
             }
+        }
+    });
 
-        });
-});
-
-
-
-
+}

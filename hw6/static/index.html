@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>hw6</title>
     <link href="static/style.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -17,7 +17,13 @@
                 </label>
                 <div class="btn-group">
                     <input type="submit" value="Search" id="search-btn">
-                    <input type="button" value="Clear" id="clear-btn">
+                    <input type="button" value="Clear" id="clear-btn" onclick="clearAll()">
+                </div>
+
+                <div id="warning-box">
+                    <div class="arrow"></div>
+                    <div id="icon"></div>
+                    <div id="warning-text">Please fill out this field.</div>
                 </div>
             </form>
         </div>
@@ -28,6 +34,10 @@
         <button class="tab-links" onclick="changeTab('summary', 1)">Stock Summary</button>
         <button class="tab-links" onclick="changeTab('charts', 2)">Charts</button>
         <button class="tab-links" onclick="changeTab('news',3)">Latest News</button>
+    </div>
+
+    <div id="error">
+        Error: No record has been found, please enter a valid symbol.
     </div>
 
     <div id="outlook" class="tab-content">
@@ -60,7 +70,7 @@
     <div id="summary" class="tab-content">
         <table>
             <tr>
-                <td class="attribute">Company Name</td>
+                <td class="attribute">Stock Ticker Symbol</td>
                 <td class="data"></td>
             </tr>
             <tr>
