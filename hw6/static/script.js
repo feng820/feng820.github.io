@@ -113,7 +113,7 @@ initSummaryView = (ticker) => {
         dataList[4].innerHTML = summaryData['high'];
         dataList[5].innerHTML = summaryData['low'];
         dataList[6].innerHTML = change;
-        dataList[7].innerHTML = summaryData['changePercent'] + '%';
+        dataList[7].innerHTML = summaryData['changePercent'].length !== 0 ? summaryData['changePercent'] + '%' : '';
         dataList[8].innerHTML = summaryData['volume'];
 
         if (change !== 0) {
@@ -210,6 +210,19 @@ initChartsView = (ticker) => {
                     yAxis: 1,
                     pointWidth: 2
                 }],
+
+                plotOptions: {
+                    series: {
+                        pointPlacement: 'on'
+                    }
+                },
+
+                xAxis: {
+                    tickPixelInterval: 90,
+                    startOnTick: true,
+                    endOnTick: true,
+                    type: 'datetime',
+                },
 
                 yAxis: [{
                     title: {
