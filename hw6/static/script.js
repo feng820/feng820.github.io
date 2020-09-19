@@ -61,24 +61,20 @@ showWarningBox = () => {
 document.getElementById('search-form').addEventListener("submit", (e) => {
     e.preventDefault();
     const ticker = document.getElementById('search-bar').value;
-    if (ticker.length === 0) {
-        showWarningBox();
-    } else {
-        clearAll(true);
-        fetch('/outlook/' + ticker)
-            .then(res => res.json())
-            .then((data) => {
-                if (data.hasOwnProperty('error')) {
-                    document.getElementById('error').style.display = 'block';
-                } else {
-                    document.getElementById('error').style.display = 'none';
-                    initDefaultView(data);
-                    initSummaryView(ticker);
-                    initChartsView(ticker);
-                    initNewsView(ticker);
-                }
-            });
-        }
+    clearAll(true);
+    fetch('/outlook/' + ticker)
+        .then(res => res.json())
+        .then((data) => {
+            if (data.hasOwnProperty('error')) {
+                document.getElementById('error').style.display = 'block';
+            } else {
+                document.getElementById('error').style.display = 'none';
+                initDefaultView(data);
+                initSummaryView(ticker);
+                initChartsView(ticker);
+                initNewsView(ticker);
+            }
+        });
 });
 
 initDefaultView = (data) => {
