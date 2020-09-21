@@ -40,20 +40,20 @@ def get_stock_summary(ticker):
     if len(data) > 0:
         data = data[0]
         try:
-            open_price = float(data.get('open'))
+            prev_close_price = float(data.get('prevClose'))
             last_price = float(data.get('last'))
         except TypeError:
-            open_price = 0
+            prev_close_price = 0
             last_price = 0
-        change = round(last_price - open_price, 2)
+        change = last_price - prev_close_price
         tabular_data = {'ticker': data.get('ticker'),
                         'timestamp': data.get('timestamp').split('T')[0] if data.get('timestamp') else '',
-                        'prevClose': data.get('prevClose'),
-                        'open': open_price if open_price != 0 else '',
+                        'prevClose': prev_close_price if prev_close_price != 0 else '',
+                        'open': data.get('open'),
                         'high': data.get('high'),
                         'low': data.get('low'),
-                        'change': change if change != 0 else '',
-                        'changePercent': round(abs(change) / open_price * 100, 2) if open_price != 0 else '',
+                        'change': round(change, 2) if change != 0 else '',
+                        'changePercent': round((change / prev_close_price) * 100, 2) if prev_close_price != 0 else '',
                         'volume': data.get('volume'),
                         }
     return jsonify(tabular_data)

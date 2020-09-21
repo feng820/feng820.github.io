@@ -215,8 +215,6 @@ initChartsView = (ticker) => {
 
                 xAxis: {
                     tickPixelInterval: 90,
-                    startOnTick: true,
-                    endOnTick: true,
                     type: 'datetime',
                 },
 
