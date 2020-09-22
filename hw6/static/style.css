@@ -5,7 +5,8 @@ body {
 .container {
     width: 850px;
     height: 250px;
-    margin: 25px auto;
+    margin-top: 25px;
+    margin-left: 230px;
     background-color: #E8E8E8;
     border-radius: 4px;
     position: relative;
@@ -65,7 +66,7 @@ body {
     font-family: 'Inter', sans-serif;
     font-size: 13px;
     background-color: #f2f2f2;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 
 .btn-group input:first-child {
@@ -83,7 +84,8 @@ body {
 
 #line {
     width: 850px;
-    margin: 25px auto;
+    margin-top: 25px;
+    margin-left: 230px;
     background-color: #E8E8E8;
     height: 1px;
     border: none;
@@ -93,7 +95,8 @@ body {
     width: 850px;
     height: 55px;
     background-color: #E8E8E8;
-    margin: auto;
+    margin-top: 25px;
+    margin-left: 230px;
     display: none;
 }
 
@@ -120,7 +123,8 @@ body {
 .tab-content {
     display: none;
     width: 850px;
-    margin: 35px auto;
+    margin-top: 25px;
+    margin-left: 230px;
     font-family: 'Inter', sans-serif;
     font-size: 15px;
 }
@@ -265,5 +269,6 @@ body {
     display: none;
     font-family: 'Inter', sans-serif;
     font-weight: 600;
-    text-align: center;
+    margin-top: 25px;
+    margin-left: 415px;
 }

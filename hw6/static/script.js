@@ -214,11 +214,11 @@ initChartsView = (ticker) => {
                     }
                 },
 
-                xAxis: {
-                    tickPixelInterval: 90,
-                    type: 'datetime',
-                    minRange: 7 * 24 * 360000,
-                },
+                // xAxis: {
+                //     tickPixelInterval: 90,
+                //     type: 'datetime',
+                //     minRange: 7 * 24 * 360000,
+                // },
 
                 yAxis: [{
                     title: {
