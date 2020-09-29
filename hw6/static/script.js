@@ -108,15 +108,16 @@ initSummaryView = (ticker) => {
         dataList[3].innerHTML = summaryData['open'];
         dataList[4].innerHTML = summaryData['high'];
         dataList[5].innerHTML = summaryData['low'];
-        dataList[6].innerHTML = change;
-        dataList[7].innerHTML = summaryData['changePercent'].length !== 0 ? summaryData['changePercent'] + '%' : '';
-        dataList[8].innerHTML = summaryData['volume'];
+        dataList[6].innerHTML = summaryData['last'];
+        dataList[7].innerHTML = change
+        dataList[8].innerHTML = summaryData['changePercent'].length !== 0 ? summaryData['changePercent'] + '%' : '';
+        dataList[9].innerHTML = summaryData['volume'];
 
         if (change !== 0) {
             arrow.className = 'arrow-image';
-            dataList[6].append(arrow);
+            dataList[7].append(arrow);
             const arrowCopy = arrow.cloneNode(true);
-            dataList[7].append(arrowCopy);
+            dataList[8].append(arrowCopy);
         }
     });
 }
@@ -149,7 +150,6 @@ initChartsView = (ticker) => {
                 },
 
                 subtitle: {
-                    userHtml: true,
                     text: '<a href="https://api.tiingo.com/">Source: Tinngo</a>',
                 },
 
@@ -235,6 +235,12 @@ initChartsView = (ticker) => {
                     opposite: true
                 }],
             });
+
+            const subTitle = document.querySelector('.highcharts-subtitle a')
+            subTitle.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.open('https://api.tiingo.com/', '_blank');
+            });
         });
 
 }
@@ -266,6 +272,7 @@ initNewsView = (ticker) => {
                 link.href = article['url'];
                 link.style.textDecoration = 'underline';
                 link.style.color = 'purple';
+                link.target = '_blank';
                 title.innerHTML = article['title'];
                 div.appendChild(title);
                 div.innerHTML += "<br/>"

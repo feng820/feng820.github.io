@@ -52,6 +52,7 @@ def get_stock_summary(ticker):
                         'open': data.get('open'),
                         'high': data.get('high'),
                         'low': data.get('low'),
+                        'last': last_price if last_price != 0 else '',
                         'change': round(change, 2) if prev_close_price != 0 and last_price != 0 else '',
                         'changePercent': round((change / prev_close_price) * 100, 2) if prev_close_price != 0 else '',
                         'volume': data.get('volume'),
