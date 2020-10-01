@@ -146,11 +146,13 @@ initChartsView = (ticker) => {
 
             Highcharts.stockChart('charts', {
                 title: {
-                    text: 'Stock Price ' + tickerName + ' ' + chartsData['today_date']
+                    text: 'Stock Price ' + tickerName + ' ' + chartsData['today_date'],
+                    margin: 25
                 },
 
                 subtitle: {
                     text: '<a href="https://api.tiingo.com/">Source: Tinngo</a>',
+                    y: 40
                 },
 
                 rangeSelector: {
@@ -271,7 +273,6 @@ initNewsView = (ticker) => {
                 img.src = article['image'];
                 link.href = article['url'];
                 link.style.textDecoration = 'underline';
-                link.style.color = 'purple';
                 link.target = '_blank';
                 title.innerHTML = article['title'];
                 div.appendChild(title);
