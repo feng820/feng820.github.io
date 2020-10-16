@@ -1,6 +1,7 @@
 import express from 'express';
 import axios from 'axios';
 import path from 'path';
+import cors from 'cors';
 
 const app = express();
 const port = 3000;
@@ -8,6 +9,8 @@ const __dirname = path.resolve();
 
 const TINNGO_API_KEY = 'ce4fc028989a34eaf097d57dfd14d50604c63cbd';
 const NEWS_API_KEY = 'dfebb169ecb64e2ebb9823dcd0b60c44'
+
+app.use(cors());
 
 app.get('/', (req, res) => {
     //res.sendFile(path.join(__dirname, '../client/index.html'));
@@ -23,9 +26,10 @@ app.get('/outlook/:ticker', (req, res) => {
     }).then(response => {
         res.json(response.data);
     }).catch(err => {
-        if (err.response.data.detail != undefined) {
+        if (err.response.data !== undefined) {
             res.json({'error': 'Not Found'});
         } else {
+            res.json({'error': 'error'});
             console.log("Cannot fetch company outlook with error " + err);
         }
     });
@@ -42,9 +46,38 @@ app.get('/summary/:ticker', (req, res) => {
         let tabularData = {}
         if (data.length > 0) {
             tabularData = data[0];
+            const last = parseFloat(tabularData.last);
+            const prevClose = parseFloat(tabularData.prevClose);
+            if (!isNaN(last) && !isNaN(prevClose)) {
+                let change = last - prevClose;
+                let percentage = change * 100 / prevClose;
+                tabularData.change = parseFloat(change.toFixed(2));
+                tabularData.changePercent = parseFloat(percentage.toFixed(2));
+            }
+            if (tabularData.mid === null) {
+                tabularData.mid = "-";
+            }
+
+            const currentTime = new Date();
+            let parsedStockTime = Date.parse(tabularData.timestamp);
+
+            tabularData.marketOpen = Date.parse(currentTime) - parsedStockTime < 60000 ? true : false;
+
+            let date = currentTime.toLocaleDateString().split('/');
+            date = date[2] + '-' + date[0] + '-' + date[1];
+            let time = currentTime.toTimeString().split(' ')
+            tabularData.todayDate = date + ' ' + time[0];
+
+
+            let stockTime = new Date(parsedStockTime);
+            date = stockTime.toLocaleDateString().split('/');
+            date = date[2] + '-' + date[0] + '-' + date[1];
+            time = stockTime.toTimeString().split(' ')
+            tabularData.timestamp = date + ' ' + time[0];
         }
         res.json(tabularData);
     }).catch(err => {
+        res.json({'error': 'Not Found'});
         console.log("Cannot fetch company summary with error " + err);
     });
 });
@@ -75,6 +108,7 @@ app.get('/history/:ticker', (req, res) => {
             'volume_array': historyVolume,
         });
     }).catch(err => {
+        res.json({'error': 'Not Found'});
         console.log("Cannot fetch company stock history with error " + err);
     });
 });
@@ -95,7 +129,6 @@ app.get('/last/:ticker', (req, res) => {
         const historyVolume = [];
         for (let i = 0; i < data.length; i++) {
             historyDate.push(Date.parse(data[i].date));
-            //historyDate.push(data[i].date);
             historyPrice.push(data[i].close);
             historyVolume.push(data[i].volume);
         }
@@ -105,6 +138,7 @@ app.get('/last/:ticker', (req, res) => {
             'volume_array': historyVolume,
         });
     }).catch(err => {
+        res.json({'error': 'Not Found'});
         console.log("Cannot fetch company last day data with error " + err);
     });
 });

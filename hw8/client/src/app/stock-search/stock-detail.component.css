@@ -1,0 +1,94 @@
+.first-row {
+    font-size: 40px;
+    font-weight: 600;
+}
+
+.second-row {
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.third-row {
+    font-weight: 300;;
+    font-size: 14px;
+}
+
+#name {
+    color: gray;
+}
+
+.green {
+    color: #1fad1f;
+}
+
+.red {
+    color: red;
+}
+
+#error {
+    background-color:#ffe6e6;
+    font-weight: 300;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.first-row svg {
+    cursor: pointer;
+}
+
+.bi-star-fill {
+    color: #fae600;
+}
+
+#buy {
+    background-color: #39c639;
+    border: none;
+}
+
+#buy:hover {
+    background-color: #1fad1f;
+}
+
+#buy:focus {
+    box-shadow: 0 0 0 0.2rem #adebad;
+}
+
+.status-open {
+    background-color: #adebad;
+    display: inline-block;
+}
+
+.status-close {
+    background-color: #ffe6e6;
+    display: inline-block;
+}
+
+#summmary-table .table th, .table td{
+    padding: 0;
+}
+
+/* #right-summary td:first-child {
+    padding-left: 2px;
+} */
+
+.summary-table {
+    font-size: 14px;
+}
+
+#summary-tab .row {
+    margin: 0;
+}
+
+.description-header {
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.description {
+    font-size: 14px;
+}
+
+/* .open-table .summary-table {
+    width: 130px;
+    margin-left: 4rem;
+} */

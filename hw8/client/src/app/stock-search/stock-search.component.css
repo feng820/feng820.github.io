@@ -1,7 +1,29 @@
 #title {
     text-align: center;
-    font-weight: 700;
+    font-weight: 800;
     font-size: 60px;
     position: relative;
-    margin: 7% auto 3% auto
+    margin-top: 5rem !important;
+}
+
+#search-bar {
+    border-radius: 40px;
+    border: 2px solid #6e3cff;
+    max-width: 240px;
+}
+
+#search-bar:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+#search-btn {
+    color: #6e3cff;
+    position: relative;
+    margin-left: -3.5rem;
+}
+
+#ticker-name {
+    font-size: 13px;
+    font-weight: 400;
 }

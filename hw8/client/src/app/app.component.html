@@ -1,23 +1,29 @@
-<nav class="navbar navbar-expand-sm" id="nav-bar">
-  <span class="navbar-brand">Stock Search</span>
-  <ul class="navbar-nav ml-auto" id="tabs">
-    <li class="nav-item">
-      <a class="nav-link active pl-3 pr-3" routerLink="/">Search</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link pl-3 pr-3" routerLink="/watchlist">Watchlist</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link pl-3 pr-3" routerLink="/portfolio">Portfolio</a>
-    </li>
-  </ul>
-</nav>
+<div class="wrapper">
+  <header>
+    <nav class="navbar navbar-expand-sm" id="nav-bar">
+      <span class="navbar-brand">Stock Search</span>
+      <ul class="navbar-nav ml-auto" id="tabs">
+        <li class="nav-item">
+          <a class="nav-link active pl-3 pr-3" routerLink="/">Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link pl-3 pr-3" routerLink="/watchlist">Watchlist</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link pl-3 pr-3" routerLink="/portfolio">Portfolio</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+  
+  <div class="content">
+    <router-outlet (activate)="onActive()"></router-outlet>
+  </div>
 
-<router-outlet (activate)="onActive()"></router-outlet>
-
-<footer class="footer">
-    <div class="container text-center">
-      <span class="text-muted">Powered by Tiingo. Developed by Linfeng Jiang.</span>
+  <footer class="container-fluid py-3 mt-3 footer">
+    <div class="row justify-content-center text-muted">
+      Powered by Tiingo. Developed by Linfeng Jiang.
     </div>
-</footer>
-
+  </footer>
+   
+</div>

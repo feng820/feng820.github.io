@@ -1,6 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Location } from '@angular/common';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'stock-root',
@@ -8,21 +6,25 @@ import { Location } from '@angular/common';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent{
-
+  
   onActive() {
     const pathname = location.pathname;
-    let index = 0;
-    if (pathname === "/watchlist") {
+    let index = -1;
+    if (pathname === "/") {
+      index = 0;
+    } else if (pathname === "/watchlist") {
       index = 1;
-    } else if (pathname === "/portfolio") {
-      index = 2;
+    } else if (pathname === 'portfolio') {
+      index = 2
     }
     const buttons = document.getElementById('tabs').getElementsByTagName('a');
     for (let i = 0; i < buttons.length; i++) {
       buttons[i].className = buttons[i].className.replace(" active", "");
     }
 
-    buttons[index].className += ' active';
+    if (index !== -1) {
+      buttons[index].className += ' active';
+    }
   }
 
 }
