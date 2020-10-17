@@ -119,23 +119,20 @@ app.get('/last/:ticker', (req, res) => {
         params: {
             token: TINNGO_API_KEY,
             startDate: req.query.lastTimeStamp,
-            resampleFreq: '1hour',
+            resampleFreq: '4min',
             columns: 'open,high,low,close,volume'
         }
     }).then(response => {
         const data = response.data;
         const historyDate = [];
         const historyPrice = [];
-        const historyVolume = [];
         for (let i = 0; i < data.length; i++) {
             historyDate.push(Date.parse(data[i].date));
             historyPrice.push(data[i].close);
-            historyVolume.push(data[i].volume);
         }
         res.json({
             'date_array': historyDate,
             'price_array': historyPrice,
-            'volume_array': historyVolume,
         });
     }).catch(err => {
         res.json({'error': 'Not Found'});

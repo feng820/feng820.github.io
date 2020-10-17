@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from  '@angular/forms';
 import { Router } from '@angular/router';
 import * as _ from 'underscore';
-import { StockDataService } from './stock-data.service';
+import { StockDataService } from '../stock-details/stock-data.service';
 
 
 @Component({

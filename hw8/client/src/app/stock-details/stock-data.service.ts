@@ -13,31 +13,40 @@ export class StockDataService {
     getStockSuggestions(ticker) {
         const url = `http://localhost:3000/search/${ticker}`
         return this.http.get(url)
-            .pipe(catchError(this.handleError))
+            .pipe(catchError(this.handleError));
     }
 
     getCompanyOutLook(ticker) {
         const url = `http://localhost:3000/outlook/${ticker}`
         return this.http.get(url)
-            .pipe(catchError(this.handleError))
+            .pipe(catchError(this.handleError));
     }
 
     getCompanySummary(ticker) {
         const url = `http://localhost:3000/summary/${ticker}`
         return this.http.get(url)
-            .pipe(catchError(this.handleError))
+            .pipe(catchError(this.handleError));
     }
 
     getHistoryChartData(ticker) {
         const url = `http://localhost:3000/history/${ticker}`
         return this.http.get(url)
-            .pipe(catchError(this.handleError))
+            .pipe(catchError(this.handleError));
     }
 
-    getLastDayChartData(ticker) {
+    getLastDayChartData(ticker, lastTimeStamp) {
+        const options = {
+            params: {lastTimeStamp: lastTimeStamp}
+        };
         const url = `http://localhost:3000/last/${ticker}`
+        return this.http.get(url, options)
+            .pipe(catchError(this.handleError));
+    }
+
+    getNewsData(ticker) {
+        const url = `http://localhost:3000/news/${ticker}`
         return this.http.get(url)
-            .pipe(catchError(this.handleError))
+            .pipe(catchError(this.handleError));
     }
 
     private handleError(error: HttpErrorResponse) {

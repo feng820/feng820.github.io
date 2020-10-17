@@ -1,7 +1,7 @@
 <div class="mt-3 w-75 mx-auto">
     <mat-spinner class="mx-auto mt-5" *ngIf="isLoading" [diameter]="50" [strokeWidth]="4"></mat-spinner>
     <div *ngIf="!isLoading">
-        <div *ngIf="hasError" class="text-center pt-2 pb-2 mt-5" id="error">
+        <div *ngIf="hasError" class="alert alert-danger text-center" role="alert" id="error">
             No results found. Please enter valid Ticker
         </div>
 
@@ -67,11 +67,11 @@
 
             <mat-tab-group class="mt-5" mat-stretch-tabs mat-align-tabs="center">
                 <mat-tab label="Summary">
-                    <div id="summary-tab">
+                    <ng-template matTabContent>
                         <div class="row mt-4">
-                            <div class="col-6">
+                            <div class="col-12 col-md-6">
                                 <div class="row w-100 ml-4">
-                                    <div class="col-6">
+                                    <div class="col-3 col-md-6">
                                         <table class="summary-table">
                                             <tbody>
                                                 <td>High Price:</td>
@@ -133,11 +133,30 @@
                                     {{companyOutlook.description}}
                                 </div>
                             </div>
-                            <div class="col-sm-6">xixi</div>
+                            <div class="col-sm-6">
+                                <summary-chart
+                                    [ticker]="companyOutlook.ticker"
+                                    [data]="lastDayChartData"
+                                    [isPositiveChange]="companySummary.change > 0"
+                                ></summary-chart>
+                            </div>
                         </div>
-                    </div>
+                    </ng-template>
                 </mat-tab>
-                <mat-tab label="Top News"> Top News </mat-tab>
+                <mat-tab label="Top News">
+                    <ng-template matTabContent>
+                        <div class="card-group">
+                            <div class="row">
+                                <news-card
+                                    *ngFor="let newsInfo of newsDataArray"
+                                    [newsInfo]="newsInfo"
+                                    class="col-6 mt-4"></news-card>
+                            </div>
+                        </div>
+                            
+                    </ng-template>
+
+                </mat-tab>
                 <mat-tab label="Charts"> Charts</mat-tab>
             </mat-tab-group>
         </div>

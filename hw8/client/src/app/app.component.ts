@@ -14,7 +14,7 @@ export class AppComponent{
       index = 0;
     } else if (pathname === "/watchlist") {
       index = 1;
-    } else if (pathname === 'portfolio') {
+    } else if (pathname === '/portfolio') {
       index = 2
     }
     const buttons = document.getElementById('tabs').getElementsByTagName('a');

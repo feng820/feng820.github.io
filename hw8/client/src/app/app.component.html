@@ -1,18 +1,23 @@
 <div class="wrapper">
   <header>
-    <nav class="navbar navbar-expand-sm" id="nav-bar">
+    <nav class="navbar navbar-dark navbar-expand-sm justify-content-between" id="nav-bar">
       <span class="navbar-brand">Stock Search</span>
-      <ul class="navbar-nav ml-auto" id="tabs">
-        <li class="nav-item">
-          <a class="nav-link active pl-3 pr-3" routerLink="/">Search</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link pl-3 pr-3" routerLink="/watchlist">Watchlist</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link pl-3 pr-3" routerLink="/portfolio">Portfolio</a>
-        </li>
-      </ul>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#tabs-container" aria-controls="tabs-container" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse flex-grow-0 text-right" id="tabs-container">
+        <ul class="navbar-nav" id="tabs">
+          <li class="nav-item">
+            <a class="nav-link active pl-3 pr-3" routerLink="/">Search</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link pl-3 pr-3" routerLink="/watchlist">Watchlist</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link pl-3 pr-3" routerLink="/portfolio">Portfolio</a>
+          </li>
+        </ul>
+      </div>
     </nav>
   </header>
   

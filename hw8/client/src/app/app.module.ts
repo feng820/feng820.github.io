@@ -8,11 +8,14 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HttpClientModule } from '@angular/common/http';
 import { MatTabsModule } from '@angular/material/tabs';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 import { StockSearchComponent } from './stock-search/stock-search.component';
 import { WatchlistComponent } from './watchlist/watchlist.component';
 import { PortfolioComponent } from './portfolio/portfolio.component';
-import { StockDetailComponent } from './stock-search/stock-detail.component';
+import { StockDetailComponent } from './stock-details/stock-detail.component';
+import { SummaryChartComponent } from './stock-details/chart/summary-chart.component';
+import { NewsCardComponent } from './stock-details/news-card/news-card.component';
 
 // configure the classes you decorate as angular module (Metadata)
 @NgModule({
@@ -22,6 +25,8 @@ import { StockDetailComponent } from './stock-search/stock-detail.component';
     WatchlistComponent,
     PortfolioComponent,
     StockDetailComponent,
+    SummaryChartComponent,
+    NewsCardComponent,
   ],
   imports: [ // bring in other modules that you module will need
     BrowserModule,
@@ -31,7 +36,8 @@ import { StockDetailComponent } from './stock-search/stock-detail.component';
     MatAutocompleteModule,
     MatProgressSpinnerModule,
     HttpClientModule,
-    MatTabsModule
+    MatTabsModule,
+    HighchartsChartModule
   ],
   providers: [],
   bootstrap: [ // entry point for you app code
