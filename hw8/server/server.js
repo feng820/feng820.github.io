@@ -35,11 +35,47 @@ app.get('/outlook/:ticker', (req, res) => {
     });
 });
 
+app.get('/price/:ticker', (req, res) => {
+    const url = 'https://api.tiingo.com/iex/' + req.params.ticker;
+    axios.get(url, {
+        params: {
+            token: TINNGO_API_KEY,
+        }
+    }).then(response => {
+        const data = response.data
+        let pricesArray = [];
+        let entry;
+        for (let i = 0; i < data.length; i++) {
+            entry = data[i];
+            const last = parseFloat(entry.last);
+            const prevClose = parseFloat(entry.prevClose);
+            let change;
+            let changePercent;
+            if (!isNaN(last) && !isNaN(prevClose)) {
+                change = last - prevClose;
+                let percentage = change * 100 / prevClose;
+                change = parseFloat(change.toFixed(2));
+                changePercent = parseFloat(percentage.toFixed(2));
+            }
+            pricesArray.push({
+                'ticker': entry.ticker,
+                'price': entry.last,
+                'change': change,
+                'changePercent': changePercent
+            });
+        }
+        res.json(pricesArray);
+    }).catch(err => {
+        res.json([{'error': 'Not Found'}]);
+        console.log("Cannot fetch stock latest price with error " + err);
+    });
+})
+
 app.get('/summary/:ticker', (req, res) => {
     const url = 'https://api.tiingo.com/iex/' + req.params.ticker;
     axios.get(url, {
         params: {
-            token: TINNGO_API_KEY
+            token: TINNGO_API_KEY,
         }
     }).then(response => {
         const data = response.data

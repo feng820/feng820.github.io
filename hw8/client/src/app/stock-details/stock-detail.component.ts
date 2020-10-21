@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { combineLatest } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { combineLatest, Subscription } from 'rxjs';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { StockDataService } from './stock-data.service';
 import { debounceTime } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { Subject, interval } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { StockModalComponent } from '../stock-modal/stock-modal.component';
 
@@ -28,15 +28,19 @@ export class StockDetailComponent implements OnInit{
     private _startAlertSubject = new Subject<string>();
     private _buyAlertSubject = new Subject<string>();
     watchList: Array<any>;
+    portfolio: Array<any>;
+    updateSubscription: Subscription
     
 
     constructor(
         private route: ActivatedRoute,
         private stockDataService: StockDataService,
         private modalService: NgbModal,
+        private router: Router,
     ){
         this.isLoading = true;
         this.watchList = JSON.parse(localStorage.getItem("watchlist") || "[]" );
+        this.portfolio = JSON.parse(localStorage.getItem("portfolio") || "[]" );
     }
 
     ngOnInit() {
@@ -88,7 +92,22 @@ export class StockDetailComponent implements OnInit{
           debounceTime(5000)
         ).subscribe(() => this.afterBuyMessage = '');
 
+        this.updateSubscription = interval(15 * 1000).subscribe(() => {
+            const pathname = location.pathname;
+            if (pathname.startsWith('/detail')) {
+                this.stockDataService.getCompanySummary(ticker).subscribe(
+                    ob => {
+                        this.companySummary = ob;
+                        console.log("sent");
+                    }
+                )
+            }
+        });
 
+    }
+
+    ngOnDestroy() {
+        this.updateSubscription.unsubscribe();
     }
 
     isTickerInWatchlist(ticker) {
@@ -141,14 +160,64 @@ export class StockDetailComponent implements OnInit{
         this._buyAlertSubject.next(message);
     }
 
+    isTickerInPortfolio(ticker) {
+        let tickerInfo;
+        for (let i = 0; i < this.portfolio.length; i++) {
+            tickerInfo = this.portfolio[i];
+            if (tickerInfo.ticker == ticker) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private round(num) {
+        return Math.round((num + Number.EPSILON) * 1000) / 1000;
+    }
+
+    updatePortfolio(quantity) {
+        const index = this.isTickerInPortfolio(this.companyOutlook.ticker);
+        const currentPrice = this.companySummary.last;
+        const currentCost = this.round(currentPrice * quantity);
+        if (index === -1) {
+            this.portfolio.push({
+                'ticker': this.companyOutlook.ticker,
+                'name': this.companyOutlook.name,
+                'quantity': quantity,
+                'totalCost': currentCost,
+                'avgCostPerShare': this.round(currentCost/quantity),
+                'currentPrice': currentPrice,
+                'change': this.round(currentPrice - currentCost/quantity),
+                'marketValue': this.round(currentPrice * quantity),
+                'boughtPrice': currentPrice
+            });
+            this.portfolio.sort((x, y) => (x.ticker > y.ticker) ? 1 : -1);
+
+        } else {
+            const portfolioInfo = this.portfolio[index];
+            portfolioInfo.quantity += quantity;
+            portfolioInfo.totalCost += currentCost;
+            portfolioInfo.totalCost = this.round(portfolioInfo.totalCost);
+            portfolioInfo.avgCostPerShare = this.round(portfolioInfo.totalCost / portfolioInfo.quantity);
+
+            portfolioInfo.currentPrice = currentPrice;
+            portfolioInfo.change = this.round(currentPrice - portfolioInfo.avgCostPerShare);
+            portfolioInfo.marketValue = this.round(currentPrice * portfolioInfo.quantity);
+        }
+
+        localStorage.setItem('portfolio', JSON.stringify(this.portfolio));
+    }
+
     open() {
         const modalRef = this.modalService.open(StockModalComponent);
         modalRef.componentInstance.title = this.companyOutlook.ticker;
         modalRef.componentInstance.price = this.companySummary.last;
-        modalRef.result.then(result => {
-            if (result === 'buy') {
+        modalRef.componentInstance.isBuy = true;
+        modalRef.result.then(quantity => {
+            if (Number.isInteger(quantity)) {
                 this.changeBuyAlertMessage();
+                this.updatePortfolio(quantity);
             }
-        })
+        }, reject => {})
     }
 }

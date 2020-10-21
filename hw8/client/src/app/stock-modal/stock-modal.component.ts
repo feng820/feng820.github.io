@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from  '@angular/forms';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
@@ -10,9 +10,12 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 })
 export class StockModalComponent implements OnInit {
   form: FormGroup;
-  @Output() close = new EventEmitter();
+  @Input() title: string;
+  @Input() price: number;
+  @Input() isBuy: boolean;
+  @Input() quantity: number;
   constructor(
-    private activeModal: NgbActiveModal,
+    public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
   ) {}
 
@@ -22,7 +25,8 @@ export class StockModalComponent implements OnInit {
     });
   }
 
-  buy() {
-    this.activeModal.close('buy');
+  close() {
+    this.activeModal.close(this.form.get('quantity').value);
   }
+
 }

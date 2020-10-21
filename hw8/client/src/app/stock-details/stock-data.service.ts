@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -45,6 +45,12 @@ export class StockDataService {
 
     getNewsData(ticker) {
         const url = `http://localhost:3000/news/${ticker}`
+        return this.http.get(url)
+            .pipe(catchError(this.handleError));
+    }
+
+    getLatestPrice(tickers) {
+        const url = `http://localhost:3000/price/${tickers}`
         return this.http.get(url)
             .pipe(catchError(this.handleError));
     }

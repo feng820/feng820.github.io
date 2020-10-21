@@ -1,0 +1,93 @@
+<div class="card text-center">
+    <a [routerLink]="['/details', portfolioItem.ticker]" class="clickable-card">
+        <div class="card-header py-2 pl-3 d-flex">
+            {{ portfolioItem.ticker }} 
+            <span class="pt-1 pl-2">{{ portfolioItem.name }} </span>
+          </div>
+    </a>
+    <div class="row card-body justify-content-between pt-3 pl-3">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-6 text-left">
+                    Quantity:
+                </div>
+
+                <div class="col-6 text-right">
+                    {{ portfolioItem.quantity }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6 text-left">
+                    Avg.Cost / Share:
+                </div>
+
+                <div class="col-6 text-right">
+                    {{ portfolioItem.avgCostPerShare }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6 text-left">
+                    Total Cost:
+                </div>
+
+                <div class="col-6 text-right">
+                    {{ portfolioItem.totalCost }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="row">
+                <div class="col-6 text-left">
+                    Change:
+                </div>
+
+                <div class="col-6 text-right" [ngClass]="{'red': portfolioItem.change < 0, 'green': portfolioItem.currentPrice > portfolioItem.boughtPrice}">
+                    <svg *ngIf="portfolioItem.currentPrice > portfolioItem.boughtPrice" width="15px" height="15px" viewBox="0 0 16 16" class="bi bi-caret-up-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                    </svg>
+                    <svg *ngIf="portfolioItem.change < 0" width="15px" height="15px" viewBox="0 0 16 16" class="bi bi-caret-down-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                    </svg>
+                    {{ portfolioItem.change }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6 text-left">
+                    Current Price:
+                </div>
+
+                <div class="col-6 text-right" [ngClass]="{'red': portfolioItem.change < 0, 'green': portfolioItem.currentPrice > portfolioItem.boughtPrice}">
+                    {{ portfolioItem.currentPrice }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6 text-left">
+                    Market Value:
+                </div>
+
+                <div class="col-6 text-right" [ngClass]="{'red': portfolioItem.change < 0, 'green': portfolioItem.currentPrice > portfolioItem.boughtPrice}">
+                    {{ portfolioItem.marketValue }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer d-flex justify-content-end">
+        <button 
+        type="button" 
+        class="btn btn-primary mr-3" 
+        (click)="buy()"
+        >Buy</button>
+
+        <button 
+        type="button" 
+        (click)="sell()"
+        class="btn btn-danger mr-2" 
+        >Sell</button>
+    </div>
+</div>

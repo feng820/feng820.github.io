@@ -19,12 +19,19 @@
     <div class="">
         Total: {{ (price * form.get('quantity').value).toFixed(2) }}
     </div>
-    <button 
+    <button
+        *ngIf="isBuy"
         type="button" 
         class="btn btn-primary buy" 
-        (click)="buy()"
+        (click)="close()"
         [disabled]="form.get('quantity').value == null || form.get('quantity').value < 1"
-        >Buy</button>
-</div>
+    >Buy</button>
 
-<!-- (click)="activeModal.close('Close click')"  -->
+    <button
+        *ngIf="!isBuy"
+        type="button" 
+        class="btn btn-primary buy" 
+        (click)="close()"
+        [disabled]="form.get('quantity').value == null || form.get('quantity').value < 1 || form.get('quantity').value > quantity"
+    >Sell</button>
+</div>
