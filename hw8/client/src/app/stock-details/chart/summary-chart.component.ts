@@ -4,7 +4,13 @@ import * as Highcharts from 'highcharts/highstock';
 @Component({
     selector: 'summary-chart',
     templateUrl: './summary-chart.component.html',
-    styleUrls: ['./summary-chart.component.css']
+    styles: [
+        `
+          highcharts-chart {
+            display: block;
+          }
+        `
+    ]
 })
 
 export class SummaryChartComponent implements OnInit {

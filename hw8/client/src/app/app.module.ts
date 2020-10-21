@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HttpClientModule } from '@angular/common/http';
 import { MatTabsModule } from '@angular/material/tabs';
 import { HighchartsChartModule } from 'highcharts-angular';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { StockSearchComponent } from './stock-search/stock-search.component';
 import { WatchlistComponent } from './watchlist/watchlist.component';
@@ -16,6 +17,9 @@ import { PortfolioComponent } from './portfolio/portfolio.component';
 import { StockDetailComponent } from './stock-details/stock-detail.component';
 import { SummaryChartComponent } from './stock-details/chart/summary-chart.component';
 import { NewsCardComponent } from './stock-details/news-card/news-card.component';
+import { TabChartComponent } from './stock-details/chart/tab-chart.component';
+import { WatchlistCardComponent } from './watchlist/watchlist-card/watchlist-card.component';
+import { StockModalComponent } from './stock-modal/stock-modal.component';
 
 // configure the classes you decorate as angular module (Metadata)
 @NgModule({
@@ -27,6 +31,9 @@ import { NewsCardComponent } from './stock-details/news-card/news-card.component
     StockDetailComponent,
     SummaryChartComponent,
     NewsCardComponent,
+    TabChartComponent,
+    WatchlistCardComponent,
+    StockModalComponent,
   ],
   imports: [ // bring in other modules that you module will need
     BrowserModule,
@@ -37,7 +44,8 @@ import { NewsCardComponent } from './stock-details/news-card/news-card.component
     MatProgressSpinnerModule,
     HttpClientModule,
     MatTabsModule,
-    HighchartsChartModule
+    HighchartsChartModule,
+    NgbModule,
   ],
   providers: [],
   bootstrap: [ // entry point for you app code

@@ -29,11 +29,6 @@
     color: red;
 }
 
-#error {
-    font-weight: 300;
-    font-size: 14px;
-}
-
 .first-row svg {
     cursor: pointer;
 }
@@ -58,13 +53,11 @@
 .status-open {
     background-color: #adebad;
     display: inline-block;
-    font-weight: 300;
 }
 
 .status-close {
     background-color: #ffe6e6;
     display: inline-block;
-    font-weight: 300;
 }
 
 #summmary-table .table th, .table td{
@@ -83,8 +76,3 @@
 .description {
     font-size: 14px;
 }
-
-/* .open-table .summary-table {
-    width: 130px;
-    margin-left: 4rem;
-} */

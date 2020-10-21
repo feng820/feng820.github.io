@@ -95,17 +95,26 @@ app.get('/history/:ticker', (req, res) => {
     }).then(response => {
         const data = response.data;
         const historyDate = [];
-        const historyPrice = [];
-        const historyVolume = [];
+        const openPrice = [];
+        const highPrice = [];
+        const lowPrice = [];
+        const closePrice = [];
+        const volume = [];
         for (let i = 0; i < data.length; i++) {
             historyDate.push(Date.parse(data[i].date.split('T')[0]));
-            historyPrice.push(data[i].close);
-            historyVolume.push(data[i].volume);
+            openPrice.push(data[i].open);
+            highPrice.push(data[i].high);
+            lowPrice.push(data[i].low);
+            closePrice.push(data[i].close);
+            volume.push(data[i].volume);
         }
         res.json({
             'date_array': historyDate,
-            'price_array': historyPrice,
-            'volume_array': historyVolume,
+            'open_price_array': openPrice,
+            'high_price_array': highPrice,
+            'low_price_array': lowPrice,
+            'close_price_array': closePrice,
+            'volume_array': volume,
         });
     }).catch(err => {
         res.json({'error': 'Not Found'});

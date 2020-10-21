@@ -1,9 +1,23 @@
 <div class="mt-3 w-75 mx-auto">
     <mat-spinner class="mx-auto mt-5" *ngIf="isLoading" [diameter]="50" [strokeWidth]="4"></mat-spinner>
     <div *ngIf="!isLoading">
-        <div *ngIf="hasError" class="alert alert-danger text-center" role="alert" id="error">
+        <ngb-alert *ngIf="hasError" [dismissible]="false" type="danger" class="text-center mt-5">
             No results found. Please enter valid Ticker
-        </div>
+        </ngb-alert>
+
+        <ngb-alert 
+            class="text-center"
+            *ngIf="afterStarMessage" 
+            [type]="isInWatchList ? 'success' : 'danger'" 
+            (close)="afterStarMessage = ''"
+        >{{ afterStarMessage }}</ngb-alert>
+        
+        <ngb-alert 
+            class="text-center"
+            *ngIf="afterBuyMessage" 
+            type="success"
+            (close)="afterBuyMessage = ''"
+        >{{ afterBuyMessage }}</ngb-alert>
 
         <div *ngIf="!hasError">
             <div class="first-row row">
@@ -54,7 +68,7 @@
 
             <div class="row">
                 <div class="col-6">
-                    <button id="buy" type="button" class="btn btn-primary mt-2 pl-3 pr-3 pt-2 pb-2">Buy</button>
+                    <button id="buy" type="button" class="btn btn-primary mt-2 px-3 py-2" (click)="open()">Buy</button>
                 </div>
             </div>
 
@@ -104,19 +118,19 @@
                                             </tbody>
                                             <tbody>
                                                 <td>Ask Price:</td>
-                                                <td>{{companySummary.askPrice}}121</td>
+                                                <td>{{companySummary.askPrice}}</td>
                                             </tbody>
                                             <tbody>
                                                 <td>Ask Size:</td>
-                                                <td>{{companySummary.askSize}}324</td>
+                                                <td>{{companySummary.askSize}}</td>
                                             </tbody>
                                             <tbody>
                                                 <td>Bid Price:</td>
-                                                <td>{{companySummary.bidPrice}}223</td>
+                                                <td>{{companySummary.bidPrice}}</td>
                                             </tbody>
                                             <tbody>
                                                 <td>Bid Size:</td>
-                                                <td>{{companySummary.bidSize}}123</td>
+                                                <td>{{companySummary.bidSize}}</td>
                                             </tbody>
                                         </table>
                                     </div>
@@ -157,7 +171,17 @@
                     </ng-template>
 
                 </mat-tab>
-                <mat-tab label="Charts"> Charts</mat-tab>
+                <mat-tab label="Charts">
+                    <ng-template matTabContent>
+                        <div class="row h-100">
+                            <div class="col-12">
+                                <tab-chart 
+                                [ticker]="companyOutlook.ticker"
+                                [data]="historyChartData"></tab-chart>
+                            </div>
+                        </div>
+                    </ng-template>
+                </mat-tab>
             </mat-tab-group>
         </div>
     </div>
