@@ -1,0 +1,31 @@
+.heading {
+    font-weight: 600;
+    font-size: 30px;
+}
+
+.modal-body {
+    line-height: initial;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.share {
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    font-size: 17px;
+}
+
+.twitter-share-button, .twitter-share-button:hover {
+    color: #1DA1F2;
+}
+
+.facebook, .facebook:hover {
+    color: blue;
+}
+
+.modal-header button {
+    outline: none;
+}

@@ -2,6 +2,15 @@
     margin: 0;
 }
 
-img {
+/* img {
     max-height: 80px;
+} */
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.card {
+    cursor: pointer;
 }

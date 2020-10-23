@@ -1,0 +1,43 @@
+<div class="modal-header">
+    <div>
+        <div class="heading">{{ newsInfo.source.name }}</div>
+        <div class="text-muted mt-n1"> {{ newsInfo.publishedAt }}</div>
+    </div>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body">
+    <div class="title">
+        {{ newsInfo.title }}
+    </div>
+
+    <div>
+        {{ newsInfo.description }}
+    </div>
+
+    <div class="text-muted">
+        For more details click <a [href]="newsInfo.url" target="_blank">here</a>
+    </div>
+
+    <div class="share mt-5">
+        <div class="pt-4 pl-3">
+            Share
+        </div>
+
+        <div class="py-4 pl-3">
+            <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text={{newsInfo.title}} {{newsInfo.url}}" target="_blank">
+                <i class="fab fa-twitter fa-2x"></i>
+            </a>
+
+            <span class="fb-share-button ml-2" data-href="{{newsInfo.url}}">
+                <a target="_blank" 
+                   href="https://www.facebook.com/sharer/sharer.php?u={{newsInfo.url}};src=sdkpreparse" 
+                   class="fb-xfbml-parse-ignore facebook">
+                   <i class="fab fa-facebook-square fa-2x"></i>
+                </a>
+            </span>
+        </div>
+    </div>
+</div>

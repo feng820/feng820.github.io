@@ -219,14 +219,29 @@ app.get('/news/:ticker', (req, res) => {
         const topTwentyNews = [];
         if (articles !== undefined) {
             for (let i = 0; i < articles.length; i++) {
-                topTwentyNews.push({
-                    'url': articles[i].url,
-                    'title': articles[i].title,
-                    'description': articles[i].description,
-                    'source': articles[i].source,
-                    'urlToImage': articles[i].urlToImage,
-                    'publishedAt': articles[i].publishedAt,
-                });
+                const url = articles[i].url;
+                const title = articles[i].title;
+                const description = articles[i].description;
+                const source = articles[i].source;
+                const urlToImage = articles[i].urlToImage;
+                const publishedAt = articles[i].publishedAt;
+
+                if (url != null && title != null && description != null && source != null 
+                    && urlToImage != null && publishedAt != null && source.name != null) {
+                        let d = new Date(Date.parse(publishedAt));
+                        let dateArray = d.toLocaleDateString().split('/');
+                        let date = d.toLocaleString('default', { month: 'long' }) + ' ' + dateArray[1] + ', ' + dateArray[2];
+
+                        topTwentyNews.push({
+                            'url': url,
+                            'title': title,
+                            'description': description,
+                            'source': source,
+                            'urlToImage': urlToImage,
+                            'publishedAt': date,
+                        });
+                }
+
                 if (topTwentyNews.length >= 20) {
                     break;
                 }

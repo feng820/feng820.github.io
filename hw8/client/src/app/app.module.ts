@@ -21,6 +21,7 @@ import { TabChartComponent } from './stock-details/chart/tab-chart.component';
 import { WatchlistCardComponent } from './watchlist/watchlist-card/watchlist-card.component';
 import { StockModalComponent } from './stock-modal/stock-modal.component';
 import { PortfolioCardComponent } from './portfolio/portfolio-card/portfolio-card.component';
+import { NewsModalComponent } from './stock-details/news-modal/news-modal.component';
 
 // configure the classes you decorate as angular module (Metadata)
 @NgModule({
@@ -36,6 +37,7 @@ import { PortfolioCardComponent } from './portfolio/portfolio-card/portfolio-car
     WatchlistCardComponent,
     StockModalComponent,
     PortfolioCardComponent,
+    NewsModalComponent,
   ],
   imports: [ // bring in other modules that you module will need
     BrowserModule,

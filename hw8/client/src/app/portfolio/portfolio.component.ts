@@ -15,12 +15,14 @@ import { StockDataService } from '../stock-details/stock-data.service';
 })
 
 export class PortfolioComponent implements OnInit{
-    portfolio: Array<any>
+    portfolio: Array<any>;
+    isLoading: boolean;
 
     constructor(
       private stockDataService: StockDataService,
     ) {
         this.portfolio = JSON.parse(localStorage.getItem("portfolio") || "[]" );
+        this.isLoading = true;
     }
 
     ngOnInit() {
@@ -50,6 +52,7 @@ export class PortfolioComponent implements OnInit{
                   portfolioInfo.marketValue = this.round(portfolioInfo.currentPrice * portfolioInfo.quantity);
               }
               localStorage.setItem('watchlist', JSON.stringify(this.portfolio));
+              this.isLoading = false;
           }
       );
     }

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, Subscription } from 'rxjs';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { StockDataService } from './stock-data.service';
 import { debounceTime } from 'rxjs/operators';
 import { Subject, interval } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { StockModalComponent } from '../stock-modal/stock-modal.component';
 
 
@@ -29,14 +29,14 @@ export class StockDetailComponent implements OnInit{
     private _buyAlertSubject = new Subject<string>();
     watchList: Array<any>;
     portfolio: Array<any>;
-    updateSubscription: Subscription
+    updateSubscription: Subscription;
+    buyModalRef: NgbModalRef;
     
 
     constructor(
         private route: ActivatedRoute,
         private stockDataService: StockDataService,
         private modalService: NgbModal,
-        private router: Router,
     ){
         this.isLoading = true;
         this.watchList = JSON.parse(localStorage.getItem("watchlist") || "[]" );
@@ -98,7 +98,9 @@ export class StockDetailComponent implements OnInit{
                 this.stockDataService.getCompanySummary(ticker).subscribe(
                     ob => {
                         this.companySummary = ob;
-                        console.log("sent");
+                        if (this.modalService.hasOpenModals() && this.buyModalRef !== undefined) {
+                            this.buyModalRef.componentInstance.price = this.companySummary.last;
+                        }
                     }
                 )
             }
@@ -209,14 +211,15 @@ export class StockDetailComponent implements OnInit{
     }
 
     open() {
-        const modalRef = this.modalService.open(StockModalComponent);
-        modalRef.componentInstance.title = this.companyOutlook.ticker;
-        modalRef.componentInstance.price = this.companySummary.last;
-        modalRef.componentInstance.isBuy = true;
-        modalRef.result.then(quantity => {
+        this.buyModalRef =  this.modalService.open(StockModalComponent);
+        this.buyModalRef.componentInstance.title = this.companyOutlook.ticker;
+        this.buyModalRef.componentInstance.price = this.companySummary.last;
+        this.buyModalRef.componentInstance.isBuy = true;
+        this.buyModalRef.result.then(quantity => {
             if (Number.isInteger(quantity)) {
                 this.changeBuyAlertMessage();
                 this.updatePortfolio(quantity);
+                this.buyModalRef = undefined;
             }
         }, reject => {})
     }

@@ -15,12 +15,14 @@ import { StockDataService } from '../stock-details/stock-data.service';
 })
 
 export class WatchlistComponent implements OnInit{
-    watchList: Array<any>
+    watchList: Array<any>;
+    isLoading: boolean;
 
     constructor(
         private stockDataService: StockDataService,
     ) {
         this.watchList = JSON.parse(localStorage.getItem("watchlist") || "[]" );
+        this.isLoading = true;
     }
 
     ngOnInit() {
@@ -40,11 +42,13 @@ export class WatchlistComponent implements OnInit{
                     if (ob[i].error !== undefined) {
                         break;
                     }
-                    this.watchList[i].last = ob[i].price;
-                    this.watchList[i].change = ob[i].change;
-                    this.watchList[i].changePercent = ob[i].changePercent;
+                    const watchlistItem = this.watchList[i]
+                    watchlistItem.last = ob[i].price;
+                    watchlistItem.change = ob[i].change;
+                    watchlistItem.changePercent = ob[i].changePercent;
                 }
                 localStorage.setItem('watchlist', JSON.stringify(this.watchList));
+                this.isLoading = false;
             }
         );
     }
@@ -56,6 +60,7 @@ export class WatchlistComponent implements OnInit{
             }
         }
         localStorage.setItem('watchlist', JSON.stringify(this.watchList));
+        this.fetchLatestPrices();
     }
 
 

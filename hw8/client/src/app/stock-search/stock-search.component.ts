@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from  '@angular/forms';
 import { Router } from '@angular/router';
-import * as _ from 'underscore';
+import { debounceTime } from 'rxjs/operators';
 import { StockDataService } from '../stock-details/stock-data.service';
+import { Subject } from 'rxjs';
 
 
 @Component({
@@ -15,6 +16,7 @@ export class StockSearchComponent implements OnInit{
     form: FormGroup;
     searchResults: any;
     isLoading: boolean;
+    subject = new Subject<string>();
 
     constructor(
         private formBuilder: FormBuilder,
@@ -26,8 +28,18 @@ export class StockSearchComponent implements OnInit{
         this.form = this.formBuilder.group({
             ticker: this.formBuilder.control('')
         });
-        this.search = _.debounce(this.search, 1000);
         this.isLoading = false;
+        this.subject.pipe(
+            debounceTime(1000),
+        ).subscribe(input => {
+            this.isLoading = true;
+            this.stockDataService.getStockSuggestions(input)
+                .subscribe((data: any) => {
+                    this.isLoading = false;
+                    const filtered = data.filter(result => result.name !== null);
+                    this.searchResults = filtered;
+                });
+        })
     }
 
     search() {
@@ -35,13 +47,7 @@ export class StockSearchComponent implements OnInit{
         if (input === '') {
             return;
         }
-        this.isLoading = true;
-        this.stockDataService.getStockSuggestions(input)
-            .subscribe((data: any) => {
-                this.isLoading = false;
-                const filtered = data.filter(result => result.name !== null);
-                this.searchResults = filtered;
-            });
+        this.subject.next(input);
     }
 
     onSubmit(input) {
