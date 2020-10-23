@@ -34,6 +34,10 @@ export class WatchlistComponent implements OnInit{
         for (let item of this.watchList) {
             tickers.push(item.ticker);
         }
+        if (tickers.length === 0) {
+            this.isLoading = false;
+            return;
+        }
         this.stockDataService.getLatestPrice(tickers).subscribe(
             (ob: Array<any>) => {
                 ob.sort((x, y) => (x.ticker > y.ticker) ? 1 : -1);

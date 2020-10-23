@@ -38,6 +38,10 @@ export class PortfolioComponent implements OnInit{
       for (let item of this.portfolio) {
           tickers.push(item.ticker);
       }
+      if (tickers.length === 0) {
+        this.isLoading = false;
+        return;
+      }
       this.stockDataService.getLatestPrice(tickers).subscribe(
           (ob: Array<any>) => {
               ob.sort((x, y) => (x.ticker > y.ticker) ? 1 : -1);
@@ -51,7 +55,7 @@ export class PortfolioComponent implements OnInit{
                   portfolioInfo.change = this.round(portfolioInfo.currentPrice - portfolioInfo.avgCostPerShare);
                   portfolioInfo.marketValue = this.round(portfolioInfo.currentPrice * portfolioInfo.quantity);
               }
-              localStorage.setItem('watchlist', JSON.stringify(this.portfolio));
+              localStorage.setItem('portfolio', JSON.stringify(this.portfolio));
               this.isLoading = false;
           }
       );
@@ -60,6 +64,5 @@ export class PortfolioComponent implements OnInit{
     onHandleUpdatePrice() {
         this.fetchLatestPrices();
     }
-
     
 }

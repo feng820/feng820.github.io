@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NewsModalComponent } from '../news-modal/news-modal.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'news-card',
