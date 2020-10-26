@@ -26,7 +26,7 @@ app.get('/outlook/:ticker', (req, res) => {
     }).then(response => {
         res.json(response.data);
     }).catch(err => {
-        if (err.response.data !== undefined) {
+        if (err.response !== undefined && err.response.data !== undefined) {
             res.json({'error': 'Not Found'});
         } else {
             res.json({'error': 'error'});

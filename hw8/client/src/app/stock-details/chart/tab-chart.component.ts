@@ -50,14 +50,11 @@ export class TabChartComponent implements OnInit {
 
         this.chartOptions = {
             chart: {
-                height: 75 + '%'
+                height: 900,
             },
 
             title: {
                 text: this.ticker + " Historical",
-                style: {
-                    color: "gray"
-                }
             },
 
             subtitle: {
@@ -104,7 +101,7 @@ export class TabChartComponent implements OnInit {
               id: this.ticker,
               data: ohlcData,
               zIndex: 2,
-              lineWidth: 1.5
+              lineWidth: 1.3
             }, {
               type: 'column',
               name: 'Volume',
@@ -140,7 +137,7 @@ export class TabChartComponent implements OnInit {
                   },
                   chartOptions: {
                     chart: {
-                      height: 800
+                      height: 850
                     }
                   }
                 }

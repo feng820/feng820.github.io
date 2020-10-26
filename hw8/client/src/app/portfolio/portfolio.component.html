@@ -1,20 +1,22 @@
-<div class="mt-5 w-75 mx-auto">
-    <mat-spinner class="mx-auto" *ngIf="isLoading" [diameter]="50" [strokeWidth]="4"></mat-spinner>
-    <div *ngIf="!isLoading">
-        <h1>My Portfolio</h1>
-        <div class="mt-5">
-            <ngb-alert [dismissible]="false" class="text-center" *ngIf="portfolio.length === 0">
-                Currently you don't have any stock.
-            </ngb-alert>
+<div class="row mx-2">
+    <div class="mt-5 col-12 col-md-9 mx-auto">
+        <mat-spinner class="mx-auto" *ngIf="isLoading" [diameter]="50" [strokeWidth]="4"></mat-spinner>
+        <div *ngIf="!isLoading">
+            <h1>My Portfolio</h1>
+            <div class="mt-5">
+                <ngb-alert [dismissible]="false" class="text-center" *ngIf="portfolio.length === 0">
+                    Currently you don't have any stock.
+                </ngb-alert>
 
 
-            <div class="row">
-                <portfolio-card 
-                *ngFor="let portfolioItem of portfolio"
-                [portfolioItem]="portfolioItem"
-                [portfolio]="portfolio"
-                (updatePrice)="onHandleUpdatePrice()"
-                class="col-12 mb-3"></portfolio-card>
+                <div class="row">
+                    <portfolio-card 
+                    *ngFor="let portfolioItem of portfolio"
+                    [portfolioItem]="portfolioItem"
+                    [portfolio]="portfolio"
+                    (updatePrice)="onHandleUpdatePrice()"
+                    class="col-12 mb-3"></portfolio-card>
+                </div>
             </div>
         </div>
     </div>

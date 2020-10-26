@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import * as Highcharts from 'highcharts/highstock';
 
 @Component({
@@ -13,15 +13,15 @@ import * as Highcharts from 'highcharts/highstock';
     ]
 })
 
-export class SummaryChartComponent implements OnInit {
+export class SummaryChartComponent implements OnInit, OnChanges {
     @Input() ticker: string;
     @Input() data: any;
     @Input() isPositiveChange: boolean;
     Highcharts: typeof Highcharts = Highcharts;
     chartOptions: Highcharts.Options;
     chartConstructor: string = 'stockChart';
-    
-    ngOnInit() {
+
+    constructArray() {
         const date = this.data.date_array;
         const price = this.data.price_array;
         const dataArr = [];
@@ -31,6 +31,12 @@ export class SummaryChartComponent implements OnInit {
                 price[i]
             ])
         }
+
+        return dataArr;
+    }
+    
+    ngOnInit() {
+        const dataArr = this.constructArray();
         this.chartOptions = {
             title: {
                 text: this.ticker,
@@ -56,6 +62,20 @@ export class SummaryChartComponent implements OnInit {
             },
             time: {
                 timezoneOffset: 7 * 60
+            }
+        }
+    }
+
+    ngOnChanges() {
+        if (this.chartOptions !== undefined) {
+            const dataArr = this.constructArray();
+            this.chartOptions.series[0] = {
+                data: dataArr,
+                name: this.ticker,
+                type: 'line',
+                tooltip: {
+                    valueDecimals: 2
+                }
             }
         }
     }

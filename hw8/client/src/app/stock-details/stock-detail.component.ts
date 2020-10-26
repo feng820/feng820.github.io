@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { combineLatest, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { StockDataService } from './stock-data.service';
@@ -14,7 +14,7 @@ import { StockModalComponent } from '../stock-modal/stock-modal.component';
     styleUrls: ['./stock-detail.component.css']
 })
 
-export class StockDetailComponent implements OnInit{
+export class StockDetailComponent implements OnInit, OnDestroy {
     isLoading: boolean;
     hasError: boolean;
     isInWatchList: boolean;
@@ -31,7 +31,7 @@ export class StockDetailComponent implements OnInit{
     portfolio: Array<any>;
     updateSubscription: Subscription;
     buyModalRef: NgbModalRef;
-    
+
 
     constructor(
         private route: ActivatedRoute,
@@ -96,11 +96,15 @@ export class StockDetailComponent implements OnInit{
             const pathname = location.pathname;
             if (pathname.startsWith('/detail')) {
                 this.stockDataService.getCompanySummary(ticker).subscribe(
-                    ob => {
-                        this.companySummary = ob;
-                        if (this.modalService.hasOpenModals() && this.buyModalRef !== undefined) {
-                            this.buyModalRef.componentInstance.price = this.companySummary.last;
-                        }
+                    ob1 => {
+                        this.companySummary = ob1;
+                        this.stockDataService.getLastDayChartData(ticker, this.companySummary.timestamp.split(' ')[0])
+                        .subscribe(ob2 => {
+                            this.lastDayChartData = ob2;
+                            if (this.modalService.hasOpenModals() && this.buyModalRef !== undefined) {
+                                this.buyModalRef.componentInstance.price = this.companySummary.last;
+                            }
+                        });
                     }
                 )
             }
@@ -173,24 +177,20 @@ export class StockDetailComponent implements OnInit{
         return -1;
     }
 
-    private round(num) {
-        return Math.round((num + Number.EPSILON) * 1000) / 1000;
-    }
-
     updatePortfolio(quantity) {
         const index = this.isTickerInPortfolio(this.companyOutlook.ticker);
         const currentPrice = this.companySummary.last;
-        const currentCost = this.round(currentPrice * quantity);
+        const currentCost = currentPrice * quantity;
         if (index === -1) {
             this.portfolio.push({
                 'ticker': this.companyOutlook.ticker,
                 'name': this.companyOutlook.name,
                 'quantity': quantity,
                 'totalCost': currentCost,
-                'avgCostPerShare': this.round(currentCost/quantity),
+                'avgCostPerShare': currentCost/quantity,
                 'currentPrice': currentPrice,
-                'change': this.round(currentPrice - currentCost/quantity),
-                'marketValue': this.round(currentPrice * quantity),
+                'change': currentPrice - currentCost/quantity,
+                'marketValue': currentPrice * quantity,
                 'boughtPrice': currentPrice
             });
             this.portfolio.sort((x, y) => (x.ticker > y.ticker) ? 1 : -1);
@@ -199,12 +199,12 @@ export class StockDetailComponent implements OnInit{
             const portfolioInfo = this.portfolio[index];
             portfolioInfo.quantity += quantity;
             portfolioInfo.totalCost += currentCost;
-            portfolioInfo.totalCost = this.round(portfolioInfo.totalCost);
-            portfolioInfo.avgCostPerShare = this.round(portfolioInfo.totalCost / portfolioInfo.quantity);
+            portfolioInfo.totalCost = portfolioInfo.totalCost;
+            portfolioInfo.avgCostPerShare = portfolioInfo.totalCost / portfolioInfo.quantity;
 
             portfolioInfo.currentPrice = currentPrice;
-            portfolioInfo.change = this.round(currentPrice - portfolioInfo.avgCostPerShare);
-            portfolioInfo.marketValue = this.round(currentPrice * portfolioInfo.quantity);
+            portfolioInfo.change = currentPrice - portfolioInfo.avgCostPerShare;
+            portfolioInfo.marketValue = currentPrice * portfolioInfo.quantity;
         }
 
         localStorage.setItem('portfolio', JSON.stringify(this.portfolio));

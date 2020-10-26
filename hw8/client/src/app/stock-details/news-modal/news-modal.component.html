@@ -31,7 +31,7 @@
                 <i class="fab fa-twitter fa-2x"></i>
             </a>
 
-            <span class="fb-share-button ml-2" data-href="{{newsInfo.url}}">
+            <span class="fb-share-button ml-2" [attr.data-href]="newsInfo.url">
                 <a target="_blank" 
                    href="https://www.facebook.com/sharer/sharer.php?u={{newsInfo.url}};src=sdkpreparse" 
                    class="fb-xfbml-parse-ignore facebook">

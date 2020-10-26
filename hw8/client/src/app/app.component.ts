@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+declare var $: any;
 
 @Component({
   selector: 'stock-root',
@@ -24,6 +25,7 @@ export class AppComponent{
 
     if (index !== -1) {
       buttons[index].className += ' active';
+      $(".navbar-collapse").collapse('hide')
     }
   }
 

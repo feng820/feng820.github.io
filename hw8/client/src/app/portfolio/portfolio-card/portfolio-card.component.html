@@ -2,18 +2,18 @@
     <a [routerLink]="['/details', portfolioItem.ticker]" class="clickable-card">
         <div class="card-header py-2 pl-3 d-flex">
             {{ portfolioItem.ticker }} 
-            <span class="pt-1 pl-2">{{ portfolioItem.name }} </span>
+            <span class="pt-2 pl-2">{{ portfolioItem.name }} </span>
           </div>
     </a>
     <div class="row card-body justify-content-between pt-3 pl-3">
-        <div class="col-6">
+        <div class="col-12 col-md-6">
             <div class="row">
                 <div class="col-6 text-left">
                     Quantity:
                 </div>
 
                 <div class="col-6 text-right">
-                    {{ portfolioItem.quantity }}
+                    {{ portfolioItem.quantity | displayNumber }}
                 </div>
             </div>
 
@@ -23,7 +23,7 @@
                 </div>
 
                 <div class="col-6 text-right">
-                    {{ portfolioItem.avgCostPerShare }}
+                    {{ portfolioItem.avgCostPerShare | displayNumber }}
                 </div>
             </div>
 
@@ -33,12 +33,12 @@
                 </div>
 
                 <div class="col-6 text-right">
-                    {{ portfolioItem.totalCost }}
+                    {{ portfolioItem.totalCost | displayNumber }}
                 </div>
             </div>
         </div>
 
-        <div class="col-6">
+        <div class="col-12 col-md-6">
             <div class="row">
                 <div class="col-6 text-left">
                     Change:
@@ -51,7 +51,7 @@
                     <svg *ngIf="portfolioItem.change < 0" width="15px" height="15px" viewBox="0 0 16 16" class="bi bi-caret-down-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
                     </svg>
-                    {{ portfolioItem.change }}
+                    {{ portfolioItem.change | displayNumber }}
                 </div>
             </div>
 
@@ -61,7 +61,7 @@
                 </div>
 
                 <div class="col-6 text-right" [ngClass]="{'red': portfolioItem.change < 0, 'green': portfolioItem.currentPrice > portfolioItem.boughtPrice}">
-                    {{ portfolioItem.currentPrice }}
+                    {{ portfolioItem.currentPrice | displayNumber }}
                 </div>
             </div>
 
@@ -71,7 +71,7 @@
                 </div>
 
                 <div class="col-6 text-right" [ngClass]="{'red': portfolioItem.change < 0, 'green': portfolioItem.currentPrice > portfolioItem.boughtPrice}">
-                    {{ portfolioItem.marketValue }}
+                    {{ portfolioItem.marketValue | displayNumber }}
                 </div>
             </div>
         </div>
