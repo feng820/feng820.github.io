@@ -4,20 +4,13 @@ import path from 'path';
 import cors from 'cors';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const __dirname = path.resolve();
 
 const TINNGO_API_KEY = 'ce4fc028989a34eaf097d57dfd14d50604c63cbd';
 const NEWS_API_KEY = 'dfebb169ecb64e2ebb9823dcd0b60c44'
 
-app.use(cors());
-
-app.get('/', (req, res) => {
-    //res.sendFile(path.join(__dirname, '../client/index.html'));
-    res.send("Hello Hello World");
-});
-
-app.get('/outlook/:ticker', (req, res) => {
+app.get('/api/outlook/:ticker', (req, res) => {
     const url = 'https://api.tiingo.com/tiingo/daily/' + req.params.ticker;
     axios.get(url, {
         params: {
@@ -35,7 +28,7 @@ app.get('/outlook/:ticker', (req, res) => {
     });
 });
 
-app.get('/price/:ticker', (req, res) => {
+app.get('/api/price/:ticker', (req, res) => {
     const url = 'https://api.tiingo.com/iex/' + req.params.ticker;
     axios.get(url, {
         params: {
@@ -71,7 +64,7 @@ app.get('/price/:ticker', (req, res) => {
     });
 })
 
-app.get('/summary/:ticker', (req, res) => {
+app.get('/api/summary/:ticker', (req, res) => {
     const url = 'https://api.tiingo.com/iex/' + req.params.ticker;
     axios.get(url, {
         params: {
@@ -94,22 +87,32 @@ app.get('/summary/:ticker', (req, res) => {
                 tabularData.mid = "-";
             }
 
-            const currentTime = new Date();
-            let parsedStockTime = Date.parse(tabularData.timestamp);
+            const parsedCurrentTime = Date.parse(new Date());
+            const parsedStockTime = Date.parse(tabularData.timestamp);
 
-            tabularData.marketOpen = Date.parse(currentTime) - parsedStockTime < 60000 ? true : false;
+            tabularData.marketOpen = parsedCurrentTime - parsedStockTime < 60000 ? true : false;
 
-            let date = currentTime.toLocaleDateString().split('/');
-            date = date[2] + '-' + date[0] + '-' + date[1];
-            let time = currentTime.toTimeString().split(' ')
-            tabularData.todayDate = date + ' ' + time[0];
+            const currentTimestamp = new Date(parsedCurrentTime - 7*3600*1000).toISOString().split('T'); // Convert UTC to PDT
+            let currentDate = currentTimestamp[0];
+            let currentTime = currentTimestamp[1].split('.')[0];
+            tabularData.todayDate = currentDate + " " + currentTime;
 
+            // const currentTimeObj = new Date(parsedCurrentTime);
+            // let currentDate = currentTimeObj.toLocaleDateString().split('/');
+            // currentDate = currentDate[2] + '-' + currentDate[0] + '-' + currentDate[1];
+            // let currentTime = currentTimeObj.toTimeString().split(' ')[0];
+            // tabularData.todayDate = currentDate + ' ' + currentTime;
 
-            let stockTime = new Date(parsedStockTime);
-            date = stockTime.toLocaleDateString().split('/');
-            date = date[2] + '-' + date[0] + '-' + date[1];
-            time = stockTime.toTimeString().split(' ')
-            tabularData.timestamp = date + ' ' + time[0];
+            const stockTimeStamp = new Date(parsedStockTime - 7*3600*1000).toISOString().split('T'); // Convert UTC to PDT
+            let stockDate = stockTimeStamp[0];
+            let stockTime = stockTimeStamp[1].split('.')[0];
+            tabularData.timestamp = stockDate + " " + stockTime;
+
+            // const stockTimeObj = new Date(parsedStockTime);
+            // let stockDate = stockTimeObj.toLocaleDateString().split('/');
+            // stockDate = stockDate[2] + '-' + stockDate[0] + '-' + stockDate[1];
+            // let stockTime = stockTimeObj.toTimeString().split(' ')[0];
+            // tabularData.timestamp = stockDate + ' ' + stockTime;
         }
         res.json(tabularData);
     }).catch(err => {
@@ -118,7 +121,7 @@ app.get('/summary/:ticker', (req, res) => {
     });
 });
 
-app.get('/history/:ticker', (req, res) => {
+app.get('/api/history/:ticker', (req, res) => {
     const url = 'https://api.tiingo.com/tiingo/daily/' + req.params.ticker + '/prices';
     const twoYearsAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 2)).toISOString().split('T')[0];
 
@@ -158,7 +161,7 @@ app.get('/history/:ticker', (req, res) => {
     });
 });
 
-app.get('/last/:ticker', (req, res) => {
+app.get('/api/last/:ticker', (req, res) => {
     const url = 'https://api.tiingo.com/iex/' + req.params.ticker + '/prices';
     axios.get(url, {
         params: {
@@ -185,7 +188,7 @@ app.get('/last/:ticker', (req, res) => {
     });
 });
 
-app.get('/search/:query', (req, res) => {
+app.get('/api/search/:query', (req, res) => {
     const url = 'https://api.tiingo.com/tiingo/utilities/search';
     axios.get(url, {
         params: {
@@ -207,7 +210,7 @@ app.get('/search/:query', (req, res) => {
     })
 })
 
-app.get('/news/:ticker', (req, res) => {
+app.get('/api/news/:ticker', (req, res) => {
     const url = 'https://newsapi.org/v2/everything';
     axios.get(url, {
         params: {
@@ -252,5 +255,13 @@ app.get('/news/:ticker', (req, res) => {
         console.log("Cannot fetch company summary with error " + err);
     });
 });
+
+app.use(cors());
+app.use(express.static(path.join(__dirname, 'dist')))
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist/index.html'));
+});
+
 
 app.listen(port);

@@ -20,6 +20,7 @@ export class SummaryChartComponent implements OnInit, OnChanges {
     Highcharts: typeof Highcharts = Highcharts;
     chartOptions: Highcharts.Options;
     chartConstructor: string = 'stockChart';
+    updateFlag = false;
 
     constructArray() {
         const date = this.data.date_array;
@@ -77,6 +78,7 @@ export class SummaryChartComponent implements OnInit, OnChanges {
                     valueDecimals: 2
                 }
             }
+            this.updateFlag = true;
         }
     }
 }
