@@ -74,18 +74,18 @@
                 </div>
     
                 <div class="row justify-content-center mt-4">
-                    <div class="col-9 text-center">
+                    <div class="col-12 text-center">
                         <div *ngIf="companySummary.marketOpen" class="text-center status-open">Market is Open</div>
                         <div *ngIf="!companySummary.marketOpen" class="text-center status-close">Market Closed on {{companySummary.timestamp}}</div>
                     </div>
                 </div>
     
-                <mat-tab-group class="mt-5" mat-stretch-tabs mat-align-tabs="center">
+                <mat-tab-group class="mt-5 mx-3" mat-stretch-tabs mat-align-tabs="center">
                     <mat-tab label="Summary">
                         <ng-template matTabContent>
                             <div class="row mt-4">
                                 <div class="col-12 col-md-6">
-                                    <div class="row w-100 pl-4 justify-content-between">
+                                    <div class="row w-100 pl-0 pl-md-4 justify-content-between">
                                         <div class="col-6">
                                             <table class="summary-table">
                                                 <tbody>

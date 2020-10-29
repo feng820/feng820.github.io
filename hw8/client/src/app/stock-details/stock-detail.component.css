@@ -8,7 +8,7 @@
 }
 
 .second-row {
-    font-size: 30px;
+    font-size: 27px;
     font-weight: 600;
 }
 
@@ -53,11 +53,13 @@
 .status-open {
     background-color: #adebad;
     display: inline-block;
+    font-size: 15px;
 }
 
 .status-close {
     background-color: #ffe6e6;
     display: inline-block;
+    font-size: 15px;
 }
 
 #summmary-table .table th, .table td{
