@@ -1,8 +1,8 @@
-<div class="card text-center">
+<div class="card">
     <a [routerLink]="['/details', portfolioItem.ticker]" class="clickable-card">
-        <div class="card-header py-2 pl-3 d-flex">
+        <div class="card-header py-3 pl-3">
             {{ portfolioItem.ticker }} 
-            <span class="pt-2 pl-2">{{ portfolioItem.name }} </span>
+            <span class="pt-2 pl-1">{{ portfolioItem.name }} </span>
           </div>
     </a>
     <div class="row card-body justify-content-between pt-3 pl-3">
@@ -18,11 +18,11 @@
             </div>
 
             <div class="row">
-                <div class="col-6 text-left">
+                <div class="col-7 text-left">
                     Avg.Cost / Share:
                 </div>
 
-                <div class="col-6 text-right">
+                <div class="col-5 text-right">
                     {{ portfolioItem.avgCostPerShare | displayNumber }}
                 </div>
             </div>

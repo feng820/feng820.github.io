@@ -6,7 +6,7 @@
 </div>
 <div class="modal-body ml-3 pb-1">
     <div class="mb-1">
-        Current Price: {{price}}
+        Current Price: {{ price | displayNumber }}
     </div>   
     <div class="form-group row" [formGroup]="form">
         <label for="quantity" class="col-12 col-md-2 col-form-label pt-0 pt-md-2">Quantity</label>
@@ -17,7 +17,7 @@
   </div>
 <div class="modal-footer justify-content-between">
     <div class="">
-        Total: {{ (price * form.get('quantity').value).toFixed(2) }}
+        Total: {{ price * form.get('quantity').value | displayNumber }}
     </div>
     <button
         *ngIf="isBuy"
