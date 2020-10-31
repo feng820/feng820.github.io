@@ -91,28 +91,8 @@ app.get('/api/summary/:ticker', (req, res) => {
             const parsedStockTime = Date.parse(tabularData.timestamp);
 
             tabularData.marketOpen = parsedCurrentTime - parsedStockTime < 60000 ? true : false;
-
-            const currentTimestamp = new Date(parsedCurrentTime - 7*3600*1000).toISOString().split('T'); // Convert UTC to PDT
-            let currentDate = currentTimestamp[0];
-            let currentTime = currentTimestamp[1].split('.')[0];
-            tabularData.todayDate = currentDate + " " + currentTime;
-
-            // const currentTimeObj = new Date(parsedCurrentTime);
-            // let currentDate = currentTimeObj.toLocaleDateString().split('/');
-            // currentDate = currentDate[2] + '-' + currentDate[0] + '-' + currentDate[1];
-            // let currentTime = currentTimeObj.toTimeString().split(' ')[0];
-            // tabularData.todayDate = currentDate + ' ' + currentTime;
-
-            const stockTimeStamp = new Date(parsedStockTime - 7*3600*1000).toISOString().split('T'); // Convert UTC to PDT
-            let stockDate = stockTimeStamp[0];
-            let stockTime = stockTimeStamp[1].split('.')[0];
-            tabularData.timestamp = stockDate + " " + stockTime;
-
-            // const stockTimeObj = new Date(parsedStockTime);
-            // let stockDate = stockTimeObj.toLocaleDateString().split('/');
-            // stockDate = stockDate[2] + '-' + stockDate[0] + '-' + stockDate[1];
-            // let stockTime = stockTimeObj.toTimeString().split(' ')[0];
-            // tabularData.timestamp = stockDate + ' ' + stockTime;
+            tabularData.todayDate = parsedCurrentTime;
+            tabularData.timestamp = parsedStockTime;
         }
         res.json(tabularData);
     }).catch(err => {

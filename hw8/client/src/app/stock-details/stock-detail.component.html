@@ -63,7 +63,7 @@
                     </div>
         
                     <div class="col-6 text-right">
-                        {{ companySummary.todayDate }}
+                        {{ companySummary.todayDate | displayDate }}
                     </div>
                 </div>
     
@@ -76,7 +76,7 @@
                 <div class="row justify-content-center mt-4">
                     <div class="col-12 text-center">
                         <div *ngIf="companySummary.marketOpen" class="text-center status-open">Market is Open</div>
-                        <div *ngIf="!companySummary.marketOpen" class="text-center status-close">Market Closed on {{companySummary.timestamp}}</div>
+                        <div *ngIf="!companySummary.marketOpen" class="text-center status-close">Market Closed on {{ companySummary.timestamp | displayDate }}</div>
                     </div>
                 </div>
     

@@ -6,6 +6,7 @@ import { debounceTime } from 'rxjs/operators';
 import { Subject, interval } from 'rxjs';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { StockModalComponent } from '../stock-modal/stock-modal.component';
+import { DisplayDatePipe } from '../display-date.pipe';
 
 
 @Component({
@@ -37,6 +38,7 @@ export class StockDetailComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private stockDataService: StockDataService,
         private modalService: NgbModal,
+        private datePipe: DisplayDatePipe,
     ){
         this.isLoading = true;
         this.watchList = JSON.parse(localStorage.getItem("watchlist") || "[]" );
@@ -74,7 +76,8 @@ export class StockDetailComponent implements OnInit, OnDestroy {
                 this.newsDataArray = ob4;
                 this.isInWatchList = this.isTickerInWatchlist(this.companyOutlook.ticker);
 
-                this.stockDataService.getLastDayChartData(ticker, this.companySummary.timestamp.split(' ')[0])
+                const pipedDate = this.datePipe.transform(this.companySummary.timestamp);
+                this.stockDataService.getLastDayChartData(ticker, pipedDate.split(' ')[0])
                     .subscribe(ob5 => {
                         this.lastDayChartData = ob5;
                         this.hasError = hasError;
@@ -98,7 +101,8 @@ export class StockDetailComponent implements OnInit, OnDestroy {
                 this.stockDataService.getCompanySummary(ticker).subscribe(
                     ob1 => {
                         this.companySummary = ob1;
-                        this.stockDataService.getLastDayChartData(ticker, this.companySummary.timestamp.split(' ')[0])
+                        const pipedDate = this.datePipe.transform(this.companySummary.timestamp);
+                        this.stockDataService.getLastDayChartData(ticker, pipedDate.split(' ')[0])
                         .subscribe(ob2 => {
                             this.lastDayChartData = ob2;
                             if (this.modalService.hasOpenModals() && this.buyModalRef !== undefined) {
