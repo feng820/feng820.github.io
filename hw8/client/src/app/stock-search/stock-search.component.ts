@@ -33,20 +33,22 @@ export class StockSearchComponent implements OnInit{
             debounceTime(1000),
         ).subscribe(input => {
             this.isLoading = true;
-            this.stockDataService.getStockSuggestions(input)
+            if (input === '') {
+                this.isLoading = false;
+                this.searchResults = [];
+            } else {
+                this.stockDataService.getStockSuggestions(input)
                 .subscribe((data: any) => {
                     this.isLoading = false;
                     const filtered = data.filter(result => result.name !== null);
                     this.searchResults = filtered;
                 });
+            }
         })
     }
 
     search() {
         const input = this.form.get('ticker').value;
-        if (input === '') {
-            return;
-        }
         this.subject.next(input);
     }
 

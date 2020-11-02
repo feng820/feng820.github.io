@@ -77,12 +77,18 @@ export class StockDetailComponent implements OnInit, OnDestroy {
                 this.isInWatchList = this.isTickerInWatchlist(this.companyOutlook.ticker);
 
                 const pipedDate = this.datePipe.transform(this.companySummary.timestamp);
-                this.stockDataService.getLastDayChartData(ticker, pipedDate.split(' ')[0])
+                if (pipedDate !== null) {
+                    this.stockDataService.getLastDayChartData(ticker, pipedDate.split(' ')[0])
                     .subscribe(ob5 => {
                         this.lastDayChartData = ob5;
                         this.hasError = hasError;
                         this.isLoading = false;
                     });
+                } else {
+                    this.lastDayChartData = null;
+                    this.hasError = hasError;
+                    this.isLoading = false;
+                }
         });
 
         this._startAlertSubject.subscribe(message => this.afterStarMessage = message);
@@ -96,19 +102,20 @@ export class StockDetailComponent implements OnInit, OnDestroy {
         ).subscribe(() => this.afterBuyMessage = '');
 
         this.updateSubscription = interval(15 * 1000).subscribe(() => {
-            const pathname = location.pathname;
-            if (pathname.startsWith('/detail')) {
+            if (!this.hasError && this.companySummary.marketOpen) {
                 this.stockDataService.getCompanySummary(ticker).subscribe(
                     ob1 => {
                         this.companySummary = ob1;
                         const pipedDate = this.datePipe.transform(this.companySummary.timestamp);
-                        this.stockDataService.getLastDayChartData(ticker, pipedDate.split(' ')[0])
-                        .subscribe(ob2 => {
-                            this.lastDayChartData = ob2;
-                            if (this.modalService.hasOpenModals() && this.buyModalRef !== undefined) {
-                                this.buyModalRef.componentInstance.price = this.companySummary.last;
-                            }
-                        });
+                        if (pipedDate !== null) {
+                            this.stockDataService.getLastDayChartData(ticker, pipedDate.split(' ')[0])
+                            .subscribe(ob2 => {
+                                this.lastDayChartData = ob2;
+                                if (this.modalService.hasOpenModals() && this.buyModalRef !== undefined) {
+                                    this.buyModalRef.componentInstance.price = this.companySummary.last;
+                                }
+                            });
+                        }
                     }
                 )
             }
@@ -117,7 +124,9 @@ export class StockDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.updateSubscription.unsubscribe();
+        if (this.updateSubscription !== undefined) {
+            this.updateSubscription.unsubscribe();
+        }
     }
 
     isTickerInWatchlist(ticker) {

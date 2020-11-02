@@ -23,6 +23,9 @@ export class SummaryChartComponent implements OnInit, OnChanges {
     updateFlag = false;
 
     constructArray() {
+        if (this.data === null) {
+            return [];
+        }
         const date = this.data.date_array;
         const price = this.data.price_array;
         const dataArr = [];

@@ -8,9 +8,8 @@
     flex: 1;
 }
 
-#nav-bar span {
-    cursor: pointer;
-    color: white;
+.navbar-brand {
+    color: #ffffff;
     font-weight: 300;
     font-size: 17px;
 }

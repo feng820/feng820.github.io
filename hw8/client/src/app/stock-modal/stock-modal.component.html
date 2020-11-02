@@ -11,7 +11,7 @@
     <div class="form-group row" [formGroup]="form">
         <label for="quantity" class="col-12 col-md-2 col-form-label pt-0 pt-md-2">Quantity</label>
         <div class="col-11 col-md-5 pl-0 ml-3 ml-md-0">
-            <input ngbAutofocus class="form-control" type="number" id="quantity" formControlName="quantity">
+            <input ngbAutofocus class="form-control" type="number" id="quantity" formControlName="quantity" min="0">
         </div>
     </div>
   </div>
