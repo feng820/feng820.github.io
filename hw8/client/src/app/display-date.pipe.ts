@@ -7,6 +7,6 @@ import { DatePipe } from '@angular/common';
 })
 export class DisplayDatePipe extends DatePipe implements PipeTransform {
     transform(date): any {
-        return super.transform(date, 'yyyy-MM-dd HH:mm:ss', 'UTC -7');
+        return super.transform(date, 'yyyy-MM-dd HH:mm:ss', 'UTC -8');
     }
 }

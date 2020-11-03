@@ -2,7 +2,7 @@
   <header>
     <nav class="navbar navbar-dark navbar-expand-sm justify-content-between" id="nav-bar">
       <a class="navbar-brand" routerLink="/">Stock Search</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#tabs-container" aria-controls="tabs-container" aria-expanded="false" aria-label="Toggle navigation">
+      <button (click)="onExpand()" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#tabs-container" aria-controls="tabs-container" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse flex-grow-0 text-right" id="tabs-container">

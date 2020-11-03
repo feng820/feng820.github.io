@@ -41,3 +41,7 @@
 .footer {
     background-color: #E8E8E8;
 }
+
+.toggler-border{
+    outline: 1px solid orange;
+}

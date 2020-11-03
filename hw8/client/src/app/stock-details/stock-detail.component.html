@@ -84,7 +84,7 @@
                     <mat-tab label="Summary">
                         <ng-template matTabContent>
                             <div class="row mt-4">
-                                <div class="col-12 col-md-6">
+                                <div class="col-12 col-lg-6">
                                     <div class="row w-100 pl-0 pl-md-4 justify-content-between">
                                         <div class="col-6">
                                             <table class="summary-table">
@@ -148,7 +148,7 @@
                                         {{companyOutlook.description}}
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 px-3">
+                                <div class="col-12 col-lg-6 px-3">
                                     <summary-chart
                                         [ticker]="companyOutlook.ticker"
                                         [data]="lastDayChartData"
@@ -165,7 +165,7 @@
                                     <news-card
                                         *ngFor="let newsInfo of newsDataArray"
                                         [newsInfo]="newsInfo"
-                                        class="col-sm-12 col-md-6 mt-4"></news-card>
+                                        class="col-sm-12 col-lg-6 mt-4"></news-card>
                                 </div>
                             </div>
                                 

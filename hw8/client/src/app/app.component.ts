@@ -27,6 +27,12 @@ export class AppComponent{
       buttons[index].className += ' active';
       $(".navbar-collapse").collapse('hide')
     }
+
+    $(".navbar-toggler").removeClass("toggler-border");
+  }
+
+  onExpand() {
+    $(".navbar-toggler").addClass("toggler-border");
   }
 
 }
