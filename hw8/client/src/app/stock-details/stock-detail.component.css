@@ -83,3 +83,7 @@
     font-size: 15px;
     font-weight: 500;
 }
+
+.news-container {
+    overflow-y: hidden;
+}

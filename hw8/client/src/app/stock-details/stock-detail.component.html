@@ -161,11 +161,11 @@
                     <mat-tab label="Top News">
                         <ng-template matTabContent>
                             <div class="card-group">
-                                <div class="row">
+                                <div class="row news-container">
                                     <news-card
                                         *ngFor="let newsInfo of newsDataArray"
                                         [newsInfo]="newsInfo"
-                                        class="col-sm-12 col-lg-6 mt-4"></news-card>
+                                        class="col-sm-12 col-lg-6 pt-4"></news-card>
                                 </div>
                             </div>
                                 
