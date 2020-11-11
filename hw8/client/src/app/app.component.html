@@ -1,32 +1,30 @@
-<div class="wrapper">
-  <header>
-    <nav class="navbar navbar-dark navbar-expand-sm justify-content-between" id="nav-bar">
-      <a class="navbar-brand" routerLink="/">Stock Search</a>
-      <button (click)="onExpand()" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#tabs-container" aria-controls="tabs-container" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse flex-grow-0 text-right" id="tabs-container">
-        <ul class="navbar-nav" id="tabs">
-          <li class="nav-item">
-            <a class="nav-link active pl-3 pr-3" routerLink="/">Search</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link pl-3 pr-3" routerLink="/watchlist">Watchlist</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link pl-3 pr-3" routerLink="/portfolio">Portfolio</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </header>
+<div class="wrapper container-fluid px-0">
+  <nav class="navbar navbar-dark navbar-expand-sm justify-content-between" id="nav-bar">
+    <a class="navbar-brand" routerLink="/">Stock Search</a>
+    <button (click)="onExpand()" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#tabs-container" aria-controls="tabs-container" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse flex-grow-0 text-right" id="tabs-container">
+      <ul class="navbar-nav" id="tabs">
+        <li class="nav-item">
+          <a class="nav-link active pl-3 pr-3" routerLink="/">Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link pl-3 pr-3" routerLink="/watchlist">Watchlist</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link pl-3 pr-3" routerLink="/portfolio">Portfolio</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
   
   <div class="content">
     <router-outlet (activate)="onActive()"></router-outlet>
   </div>
 
-  <footer class="container-fluid py-3 mt-3 footer">
-    <div class="row justify-content-center">
+  <footer class="py-3 mt-3 footer">
+    <div class="text-center">
       Powered by Tiingo. Developed by Linfeng Jiang.
     </div>
   </footer>
