@@ -1,0 +1,76 @@
+package com.example.stocks.network;
+
+import android.util.Log;
+
+import com.android.volley.Response;
+import com.example.stocks.StockApplication;
+
+import java.util.List;
+import java.util.Map;
+
+public class DataService {
+    private static DataService instance;
+    private static final String BASE_URL = "http://linfengj-571-hw8.us-east-1.elasticbeanstalk.com/api/";
+
+    public static DataService getInstance() {
+        if (instance == null) {
+            synchronized (DataService.class) {
+                if (instance == null) {
+                    instance = new DataService();
+                }
+            }
+        }
+        return instance;
+    }
+
+    public void getAutoSuggestions(String query, GsonCallBack<List<Map<String, String>>> callback) {
+        String url = BASE_URL + "search/" + query;
+        GsonRequest<List<Map<String, String>>> jsonObjectRequest = new GsonRequest
+                (url, List.class, null,
+                        (Response.Listener<List<Map<String, String>>>) response -> {
+                            if (response != null) {
+                                try {
+                                    callback.onSuccess(response);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, error -> {
+                            if (error.getMessage() != null && error.getMessage().length() > 0) {
+                                try {
+                                    callback.onError(error.getMessage());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                Log.e("Get Suggestions Error", "unexpected Error");
+                            }
+
+                        });
+
+        VolleyController.getInstance(StockApplication.getContext()).addToRequestQueue(jsonObjectRequest);
+    }
+
+
+//    public void getAutoSuggestions(String ticker, GsonCallBack<Map<String, String>> callback) {
+//        String url = BASE_URL + "outlook/" + ticker;
+//        GsonRequest<Map<String, String>> jsonObjectRequest = new GsonRequest
+//                (url, Map.class, null,
+//                        (Response.Listener<Map<String, String>>) response -> {
+//                            if (response != null) {
+//                                try {
+//                                    callback.onSuccess(response);
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }, error -> {
+//                            if (error.getMessage() != null && error.getMessage().length() > 0) {
+//                                Log.d("error", error.getMessage());
+//                            }
+//
+//                        });
+//
+//        VolleyController.getInstance(StockApplication.getContext()).addToRequestQueue(jsonObjectRequest);
+//    }
+}
