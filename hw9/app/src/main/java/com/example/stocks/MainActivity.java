@@ -8,16 +8,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.appcompat.widget.SearchView;
@@ -37,6 +33,7 @@ import static androidx.appcompat.R.id.search_src_text;
 public class MainActivity extends AppCompatActivity {
     private static final int TRIGGER_AUTO_COMPLETE = 100;
     private static final long AUTO_COMPLETE_DELAY = 300;
+    private static final String TAG = "MainActivity";
     private Handler handler;
     private AutoSuggestAdapter autoSuggestAdapter;
 
@@ -93,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        handler = new Handler((Handler.Callback) msg -> {
+        handler = new Handler(msg -> {
             if (msg.what == TRIGGER_AUTO_COMPLETE) {
                 if (!TextUtils.isEmpty(autoCompleteTextView.getText())) {
                     getSuggestions(autoCompleteTextView.getText().toString());
@@ -119,12 +116,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 autoSuggestAdapter.setData(suggestions);
                 autoSuggestAdapter.notifyDataSetChanged();
-                Log.d("Get Suggestions Success", "success");
             }
 
             @Override
             public void onError(String result) {
-                Log.e("Get Suggestions Error", "Error Message: " + result);
+                Log.e(TAG, "onError: Cannot Get Suggestions due to " + result);
             }
         });
     }

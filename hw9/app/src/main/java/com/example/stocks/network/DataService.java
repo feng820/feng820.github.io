@@ -11,6 +11,7 @@ import java.util.Map;
 public class DataService {
     private static DataService instance;
     private static final String BASE_URL = "http://linfengj-571-hw8.us-east-1.elasticbeanstalk.com/api/";
+    private static final String TAG = "DataService";
 
     public static DataService getInstance() {
         if (instance == null) {
@@ -43,7 +44,7 @@ public class DataService {
                                     e.printStackTrace();
                                 }
                             } else {
-                                Log.e("Get Suggestions Error", "unexpected Error");
+                                Log.e(TAG, "getAutoSuggestions: Unexpected Error");
                             }
 
                         });
