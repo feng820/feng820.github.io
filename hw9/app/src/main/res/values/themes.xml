@@ -8,7 +8,7 @@
         <item name="android:statusBarColor" tools:targetApi="l">@color/background_color</item>
     </style>
     
-    <style name="AppTheme.Launcher">
+    <style name="AppTheme.Launcher" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/launcher</item>
     </style>
 

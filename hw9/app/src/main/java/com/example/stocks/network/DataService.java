@@ -3,7 +3,7 @@ package com.example.stocks.network;
 import android.util.Log;
 
 import com.android.volley.Response;
-import com.example.stocks.StockApplication;
+import com.example.stocks.utils.StockApplication;
 
 import java.util.List;
 import java.util.Map;

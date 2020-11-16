@@ -1,4 +1,4 @@
-package com.example.stocks;
+package com.example.stocks.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +19,7 @@ import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.stocks.R;
 import com.example.stocks.adapter.AutoSuggestAdapter;
 import com.example.stocks.network.DataService;
 import com.example.stocks.network.GsonCallBack;

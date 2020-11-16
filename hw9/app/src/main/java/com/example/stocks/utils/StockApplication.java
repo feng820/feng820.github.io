@@ -1,4 +1,4 @@
-package com.example.stocks;
+package com.example.stocks.utils;
 
 import android.app.Application;
 

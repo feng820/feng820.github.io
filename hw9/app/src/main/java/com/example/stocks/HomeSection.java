@@ -36,10 +36,6 @@ public class HomeSection extends Section {
         return stockList.size();
     }
 
-    @Override
-    public RecyclerView.ViewHolder getItemViewHolder(View view) {
-        return new StockItemViewHolder(view);
-    }
 
     @Override
     public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
@@ -56,6 +52,11 @@ public class HomeSection extends Section {
             final PortfolioHeaderViewHolder headerHolder = (PortfolioHeaderViewHolder) holder;
             headerHolder.netWorth.setText((String) payloads.get(payloads.size() - 1));
         }
+    }
+
+    @Override
+    public RecyclerView.ViewHolder getItemViewHolder(View view) {
+        return new StockItemViewHolder(view);
     }
 
     @Override
