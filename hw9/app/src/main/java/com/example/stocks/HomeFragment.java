@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,16 +21,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.example.stocks.adapter.StockSectionedRecyclerViewAdapter;
+import com.example.stocks.utils.Constants;
+import com.example.stocks.utils.PreferenceStorageManager;
+
 import java.util.List;
 
+import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 
-public class HomeFragment extends Fragment implements HomeSection.ClickListener{
+public class HomeFragment extends Fragment implements HomeSection.ClickListener {
 
-    private SectionedRecyclerViewAdapter sectionedAdapter;
+    private StockSectionedRecyclerViewAdapter sectionedAdapter;
     private HomeSection portfolioSection;
     private HomeSection favoriteSection;
     private RecyclerView recyclerView;
@@ -48,9 +55,10 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener{
         // Inflate the layout for this fragment
         final View homeRootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        sectionedAdapter = new SectionedRecyclerViewAdapter();
+        sectionedAdapter = new StockSectionedRecyclerViewAdapter();
+        PreferenceStorageManager.clearAll();
         portfolioSection = new HomeSection(getPortfolio(), this, true);
-        favoriteSection = new HomeSection(getPortfolio(), this, false);
+        favoriteSection = new HomeSection(getFavorites(), this, false);
         recyclerView = homeRootView.findViewById(R.id.recyclerview);
 
         homeContentView = homeRootView.findViewById(R.id.home_content);
@@ -76,22 +84,107 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener{
     }
 
     @Override
-    public void onItemRootViewClicked(@NonNull HomeSection section, int itemAdapterPosition) {
+    public void onItemRootViewClicked(String sectionKey, StockItem stockItem, int itemAdapterPosition) {
+//
+//        Toast.makeText(getActivity(), "Item:" + stockItem.stockTicker + "index: " +  itemAdapterPosition,
+//                Toast.LENGTH_SHORT).show();
+//        Log.e(TAG, "onItemRootViewClicked: clicked");
 
     }
 
     private List<StockItem> getPortfolio() {
-        final List<StockItem> list = new ArrayList<>();
-        list.add(new StockItem("MSFT", "202.68", "8.0 shares",
-                "10.57", ResourcesCompat.getColor(getResources(), R.color.red,
-                null), R.drawable.ic_baseline_trending_down_24));
+        PreferenceStorageManager.addStockItemToSection(Constants.PORTFOLIO_KEY, new StockItem(
+                "MSFT",
+                "Microsoft Corp",
+                "202.47",
+                "10.57",
+                ResourcesCompat.getColor(getResources(), R.color.red,
+                        null),
+                R.drawable.ic_baseline_trending_down_24,
+                "8"));
+        PreferenceStorageManager.addStockItemToSection(Constants.PORTFOLIO_KEY, new StockItem(
+                "GOOGL",
+                "Google Corp",
+                "1616.11",
+                "59.23",
+                ResourcesCompat.getColor(getResources(), R.color.green,
+                        null),
+                R.drawable.ic_twotone_trending_up_24,
+                "5"));
 
-        list.add(new StockItem("AAPL", "115.05", "Apple Inc",
-                "0.01", ResourcesCompat.getColor(getResources(), R.color.green,
-                null), R.drawable.ic_twotone_trending_up_24));
+        PreferenceStorageManager.addStockItemToSection(Constants.PORTFOLIO_KEY, new StockItem(
+                "AAPL",
+                "Apple Inc",
+                "108.86",
+                "6.46",
+                ResourcesCompat.getColor(getResources(), R.color.red,
+                        null),
+                R.drawable.ic_baseline_trending_down_24,
+                "5"));
+
+        PreferenceStorageManager.addStockItemToSection(Constants.PORTFOLIO_KEY, new StockItem(
+                "TSLA",
+                "Tesla Inc",
+                "388.04",
+                "22.79",
+                ResourcesCompat.getColor(getResources(), R.color.red,
+                        null),
+                R.drawable.ic_baseline_trending_down_24,
+                "3"));
+
+        return PreferenceStorageManager.getSectionStockList(Constants.PORTFOLIO_KEY);
+    }
+
+    private List<StockItem> getFavorites() {
+        PreferenceStorageManager.addStockItemToSection(Constants.FAVORITE_KEY, new StockItem(
+                "NFLX",
+                "Netflix Inc",
+                "475.74",
+                "28.47",
+                ResourcesCompat.getColor(getResources(), R.color.red,
+                        null),
+                R.drawable.ic_baseline_trending_down_24));
+        PreferenceStorageManager.addStockItemToSection(Constants.FAVORITE_KEY, new StockItem(
+                "GOOGL",
+                "Google Corp",
+                "1616.11",
+                "59.23",
+                ResourcesCompat.getColor(getResources(), R.color.green,
+                        null),
+                R.drawable.ic_twotone_trending_up_24,
+                "5"));
+
+        PreferenceStorageManager.addStockItemToSection(Constants.FAVORITE_KEY, new StockItem(
+                "AAPL",
+                "Apple Inc",
+                "108.86",
+                "6.46",
+                ResourcesCompat.getColor(getResources(), R.color.red,
+                        null),
+                R.drawable.ic_baseline_trending_down_24,
+                "5"));
+
+        PreferenceStorageManager.addStockItemToSection(Constants.FAVORITE_KEY, new StockItem(
+                "IBM",
+                "International Business Machines Corp",
+                "111.66",
+                "2.75",
+                ResourcesCompat.getColor(getResources(), R.color.green,
+                        null),
+                R.drawable.ic_twotone_trending_up_24));
+
+        PreferenceStorageManager.addStockItemToSection(Constants.FAVORITE_KEY, new StockItem(
+                "TSLA",
+                "Tesla Inc",
+                "388.04",
+                "22.79",
+                ResourcesCompat.getColor(getResources(), R.color.red,
+                        null),
+                R.drawable.ic_baseline_trending_down_24,
+                "3"));
 
 
-        return list;
+        return PreferenceStorageManager.getSectionStockList(Constants.FAVORITE_KEY);
     }
 
     private void initHomeContentView(RecyclerView recyclerView) {
@@ -103,16 +196,13 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener{
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL) {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                int position = parent.getChildAdapterPosition(view);
-//                Log.e(TAG, "getItemOffsets: " + position);
-
-                // hide the last position of both portfolio and favorites
-                // TODO: replace with portfolio size and portfolio size + 1
-                if (position == 2 || position == 3 || position == state.getItemCount() - 1) {
-                    outRect.setEmpty();
-                } else {
-                    super.getItemOffsets(outRect, view, parent, state);
-                }
+                super.getItemOffsets(outRect, view, parent, state);
+//                int position = parent.getChildAdapterPosition(view);
+//                if (position == state.getItemCount() - 1) {
+//                    outRect.setEmpty();
+//                } else {
+//                    super.getItemOffsets(outRect, view, parent, state);
+//                }
             }
         });
 
@@ -122,6 +212,50 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener{
             launchBrowser.setData(url);
             startActivity(launchBrowser);
         });
+
+        enableSwipeToDelete();
     }
 
+    private void enableSwipeToDelete() {
+        SwipeToDeleteCallBack swipeToDeleteCallBack = new SwipeToDeleteCallBack(getContext(), sectionedAdapter) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder source, @NonNull RecyclerView.ViewHolder target) {
+                if (!(source instanceof StockItemViewHolder) || !(target instanceof StockItemViewHolder)) {
+                    return false;
+                }
+                StockItemViewHolder sourceViewHolder = (StockItemViewHolder) source;
+                StockItemViewHolder targetViewHolder = (StockItemViewHolder) target;
+                if (sourceViewHolder.sectionKey.equals(targetViewHolder.sectionKey)) {
+                    HomeSection currentSection =
+                            sourceViewHolder.sectionKey.equals(Constants.PORTFOLIO_KEY) ?
+                            portfolioSection : favoriteSection;
+                    int fromPosition = currentSection.findIndexOfStockByTicker(sourceViewHolder.stockTickerView.getText().toString());
+                    int toPosition = currentSection.findIndexOfStockByTicker(targetViewHolder.stockTickerView.getText().toString());
+
+                    SectionAdapter sectionAdapter = sectionedAdapter.getAdapterForSection(currentSection);
+                    sectionedAdapter.onRowMoved(fromPosition, toPosition, currentSection);
+                    sectionAdapter.notifyItemMoved(fromPosition, toPosition);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                final StockItemViewHolder stockItemViewHolder = (StockItemViewHolder) viewHolder;
+                String sectionKey = stockItemViewHolder.sectionKey;
+
+                if (sectionKey.equals(Constants.FAVORITE_KEY)) {
+                    int position = favoriteSection.findIndexOfStockByTicker(stockItemViewHolder.stockTickerView.getText().toString());
+                    SectionAdapter sectionAdapter = sectionedAdapter.getAdapterForSection(favoriteSection);
+                    favoriteSection.deleteStockItemByIndex(position);
+                    sectionAdapter.notifyItemRemoved(position);
+                    sectionAdapter.notifyItemRangeChanged(position, favoriteSection.getContentItemsTotal());
+                }
+            }
+        };
+        ItemTouchHelper itemSwipeHelper = new ItemTouchHelper(swipeToDeleteCallBack);
+        itemSwipeHelper.attachToRecyclerView(recyclerView);
+    }
 }

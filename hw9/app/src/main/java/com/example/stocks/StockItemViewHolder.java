@@ -8,21 +8,25 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class StockItemViewHolder extends RecyclerView.ViewHolder {
-    final View rootView;
-    final TextView stockTicker;
-    final TextView stockPrice;
-    final TextView stockInfo;
-    final TextView stockPriceChange;
-    final ImageView stockPriceChangeIcon;
+    public final View rootView;
+    public final TextView stockTickerView;
+    public final TextView stockPriceView;
+    public final TextView stockInfoView;
+    public final TextView stockPriceChangeView;
+    public final ImageView stockPriceChangeIconView;
+    public final ImageView arrowRightImage;
+    public final String sectionKey;
 
-    public StockItemViewHolder(@NonNull View itemView) {
+    public StockItemViewHolder(@NonNull View itemView, String sectionKey) {
         super(itemView);
 
         rootView = itemView;
-        stockTicker = itemView.findViewById(R.id.stock_ticker);
-        stockPrice = itemView.findViewById(R.id.stock_price);
-        stockInfo = itemView.findViewById(R.id.stock_info);
-        stockPriceChange = itemView.findViewById(R.id.price_change);
-        stockPriceChangeIcon = itemView.findViewById(R.id.price_change_icon);
+        stockTickerView = itemView.findViewById(R.id.stock_ticker);
+        stockPriceView = itemView.findViewById(R.id.stock_price);
+        stockInfoView = itemView.findViewById(R.id.stock_info);
+        stockPriceChangeView = itemView.findViewById(R.id.price_change);
+        stockPriceChangeIconView = itemView.findViewById(R.id.price_change_icon);
+        arrowRightImage = itemView.findViewById(R.id.arrow_right);
+        this.sectionKey = sectionKey;
     }
 }

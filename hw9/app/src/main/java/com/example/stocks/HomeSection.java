@@ -1,22 +1,36 @@
 package com.example.stocks;
 
+import android.graphics.Color;
 import android.view.View;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.stocks.utils.Constants;
+import com.example.stocks.utils.PreferenceStorageManager;
+
+import java.util.Collections;
 import java.util.List;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.utils.EmptyViewHolder;
 
 public class HomeSection extends Section {
-    private final List<StockItem> stockList;
+    interface ClickListener {
+        void onItemRootViewClicked(String sectionKey, StockItem stockItem, int itemAdapterPosition);
+    }
+
+    static class StockItemUpdate { }
+
+
+    private List<StockItem> stockList;
     private final ClickListener clickListener;
-    private final boolean isPortfolio;
+    private final String sectionKey;
+
+    private static final String TAG = "HomeSection";
 
     HomeSection(List<StockItem> stockList, ClickListener clickListener, boolean isPortfolio) {
         super(SectionParameters.builder()
@@ -28,7 +42,7 @@ public class HomeSection extends Section {
 
         this.stockList = stockList;
         this.clickListener = clickListener;
-        this.isPortfolio = isPortfolio;
+        this.sectionKey = isPortfolio ? Constants.PORTFOLIO_KEY : Constants.FAVORITE_KEY;
     }
 
     @Override
@@ -36,10 +50,9 @@ public class HomeSection extends Section {
         return stockList.size();
     }
 
-
     @Override
     public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
-        if (this.isPortfolio) {
+        if (sectionKey.equals(Constants.PORTFOLIO_KEY)) {
             return new PortfolioHeaderViewHolder(view);
         } else {
             return new EmptyViewHolder(view);
@@ -48,7 +61,7 @@ public class HomeSection extends Section {
 
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, List<Object> payloads) {
-        if (this.isPortfolio) {
+        if (sectionKey.equals(Constants.PORTFOLIO_KEY)) {
             final PortfolioHeaderViewHolder headerHolder = (PortfolioHeaderViewHolder) holder;
             headerHolder.netWorth.setText((String) payloads.get(payloads.size() - 1));
         }
@@ -56,7 +69,7 @@ public class HomeSection extends Section {
 
     @Override
     public RecyclerView.ViewHolder getItemViewHolder(View view) {
-        return new StockItemViewHolder(view);
+        return new StockItemViewHolder(view, sectionKey);
     }
 
     @Override
@@ -64,12 +77,16 @@ public class HomeSection extends Section {
         final StockItemViewHolder stockItemViewHolder = (StockItemViewHolder) holder;
         final StockItem stockItem = stockList.get(position);
 
-        stockItemViewHolder.stockTicker.setText(stockItem.stockTicker);
-        stockItemViewHolder.stockInfo.setText(stockItem.stockInfo);
-        stockItemViewHolder.stockPrice.setText(stockItem.stockPrice);
-        stockItemViewHolder.stockPriceChange.setText(stockItem.stockPriceChange);
-        stockItemViewHolder.stockPriceChange.setTextColor(stockItem.stockChangeColor);
-        stockItemViewHolder.stockPriceChangeIcon.setImageResource(stockItem.stockPriceChangeIcon);
+        stockItemViewHolder.stockTickerView.setText(stockItem.stockTicker);
+        stockItemViewHolder.stockInfoView.setText(stockItem.stockInfo);
+        stockItemViewHolder.stockPriceView.setText(stockItem.stockPrice);
+        stockItemViewHolder.stockPriceChangeView.setText(stockItem.stockPriceChange);
+        stockItemViewHolder.stockPriceChangeView.setTextColor(stockItem.stockChangeColor);
+        stockItemViewHolder.stockPriceChangeIconView.setImageResource(stockItem.stockPriceChangeIcon);
+
+        stockItemViewHolder.rootView.setOnClickListener(v ->
+                clickListener.onItemRootViewClicked
+                        (sectionKey, stockItem, stockItemViewHolder.getAdapterPosition()));
     }
 
     @Override
@@ -80,34 +97,54 @@ public class HomeSection extends Section {
 
         for (Object obj : payloads) {
             if (obj instanceof StockItemUpdate) {
-                stockItemViewHolder.stockInfo.setText(stockItem.stockInfo);
-                stockItemViewHolder.stockPrice.setText(stockItem.stockPrice);
-                stockItemViewHolder.stockPriceChange.setText(stockItem.stockPriceChange);
-                stockItemViewHolder.stockPriceChange.setTextColor(stockItem.stockChangeColor);
-                stockItemViewHolder.stockPriceChangeIcon.setImageResource(stockItem.stockPriceChangeIcon);
+                stockItemViewHolder.stockInfoView.setText(stockItem.stockInfo);
+                stockItemViewHolder.stockPriceView.setText(stockItem.stockPrice);
+                stockItemViewHolder.stockPriceChangeView.setText(stockItem.stockPriceChange);
+                stockItemViewHolder.stockPriceChangeView.setTextColor(stockItem.stockChangeColor);
+                stockItemViewHolder.stockPriceChangeIconView.setImageResource(stockItem.stockPriceChangeIcon);
             }
         }
 
-        stockItemViewHolder.rootView.setOnClickListener(v ->
-                clickListener.onItemRootViewClicked(this, stockItemViewHolder.getAdapterPosition())
-        );
     }
 
-    void updateStockItem(final int index, final String stockInfo, final String stockPrice,
-                         final String stockPriceChange, final @ColorInt int stockChangeColor,
-                         @DrawableRes final int stockPriceChangeIcon) {
+    // gets called when the drag and drop is done.
+    public void onRowMoved(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(stockList, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(stockList, i, i - 1);
+            }
+        }
+//        sectionAdapter.notifyItemMoved(fromPosition, toPosition);
+        PreferenceStorageManager.updateStorage(sectionKey, stockList);
+    }
+
+    public void deleteStockItemByIndex(int position) {
+        stockList = PreferenceStorageManager.deleteStockItemFromSection(sectionKey, stockList.get(position));
+    }
+
+    public void updateStockItem(final int index, final String stockName, final String stockPrice,
+                                final String stockPriceChange, final @ColorInt int stockChangeColor,
+                                @DrawableRes final int stockPriceChangeIcon, final String stockShares) {
         StockItem stockItem = stockList.get(index);
 
-        stockItem.stockInfo = stockInfo;
+        stockItem.stockName = stockName;
         stockItem.stockPrice = stockPrice;
         stockItem.stockPriceChange = stockPriceChange;
         stockItem.stockChangeColor = stockChangeColor;
         stockItem.stockPriceChangeIcon = stockPriceChangeIcon;
+        stockItem.updateStockSharesAndInfo(stockShares);
     }
 
-    static class StockItemUpdate { }
-
-    interface ClickListener {
-        void onItemRootViewClicked(@NonNull final HomeSection section, final int itemAdapterPosition);
+    public int findIndexOfStockByTicker(String ticker) {
+        for (int i = 0; i < stockList.size(); i++) {
+            if (stockList.get(i).stockTicker.equals(ticker)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

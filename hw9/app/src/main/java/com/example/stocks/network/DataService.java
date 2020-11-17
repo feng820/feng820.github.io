@@ -46,10 +46,9 @@ public class DataService {
                             } else {
                                 Log.e(TAG, "getAutoSuggestions: Unexpected Error");
                             }
-
                         });
 
-        VolleyController.getInstance(StockApplication.getContext()).addToRequestQueue(jsonObjectRequest);
+        VolleyController.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
 

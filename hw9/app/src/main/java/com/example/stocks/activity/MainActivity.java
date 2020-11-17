@@ -1,4 +1,4 @@
-package com.example.stocks.activities;
+package com.example.stocks.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +23,7 @@ import com.example.stocks.R;
 import com.example.stocks.adapter.AutoSuggestAdapter;
 import com.example.stocks.network.DataService;
 import com.example.stocks.network.GsonCallBack;
+import com.example.stocks.utils.PreferenceStorageManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +41,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // initialize Shared Preference singleton
+        PreferenceStorageManager.init();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
+
 
     }
 

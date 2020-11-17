@@ -17,7 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="NFLX"
-        android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,14 +28,13 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
         android:text="488.24"
-        android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/imageView2"
+        app:layout_constraintEnd_toStartOf="@+id/arrow_right"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/arrow_right"
         android:layout_width="17dp"
         android:layout_height="17dp"
         android:layout_marginTop="12dp"
@@ -68,7 +66,7 @@
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView2"
+        app:layout_constraintEnd_toStartOf="@+id/arrow_right"
         app:layout_constraintTop_toTopOf="@+id/price_change_icon" />
 
     <ImageView

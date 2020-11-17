@@ -40,6 +40,7 @@
             android:layout_height="30dp"
             android:gravity="center"
             android:text="@string/home_footer"
+            android:textColor="@android:color/darker_gray"
             android:textSize="12sp"
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"

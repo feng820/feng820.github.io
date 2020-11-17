@@ -5,7 +5,7 @@
     android:id="@+id/favorite_root"
     android:layout_width="match_parent"
     android:layout_height="30dp"
-    android:background="@color/header_color">
+    android:background="@color/section_header_color">
 
     <TextView
         android:id="@+id/section_header_title"
@@ -14,9 +14,8 @@
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="16dp"
-        android:background="@color/header_color"
+        android:background="@color/section_header_color"
         android:text="@string/favorites_title"
-        android:textColor="@android:color/black"
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
