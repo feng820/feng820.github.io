@@ -10,7 +10,6 @@
     android:paddingTop="5dp"
     android:paddingBottom="5dp">
 
-
     <TextView
         android:id="@+id/stock_ticker"
         android:layout_width="wrap_content"

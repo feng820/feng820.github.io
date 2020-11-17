@@ -56,14 +56,14 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
         final View homeRootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         sectionedAdapter = new StockSectionedRecyclerViewAdapter();
-        PreferenceStorageManager.clearAll();
+//        PreferenceStorageManager.clearAll();
         portfolioSection = new HomeSection(getPortfolio(), this, true);
         favoriteSection = new HomeSection(getFavorites(), this, false);
         recyclerView = homeRootView.findViewById(R.id.recyclerview);
 
         homeContentView = homeRootView.findViewById(R.id.home_content);
         homeProgressView = homeRootView.findViewById(R.id.progress_content);
-        homeFooterView = homeRootView.findViewById(R.id.footer);
+//        homeFooterView = homeRootView.findViewById(R.id.footer);
 
         return homeRootView;
     }
@@ -93,97 +93,10 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
     }
 
     private List<StockItem> getPortfolio() {
-        PreferenceStorageManager.addStockItemToSection(Constants.PORTFOLIO_KEY, new StockItem(
-                "MSFT",
-                "Microsoft Corp",
-                "202.47",
-                "10.57",
-                ResourcesCompat.getColor(getResources(), R.color.red,
-                        null),
-                R.drawable.ic_baseline_trending_down_24,
-                "8"));
-        PreferenceStorageManager.addStockItemToSection(Constants.PORTFOLIO_KEY, new StockItem(
-                "GOOGL",
-                "Google Corp",
-                "1616.11",
-                "59.23",
-                ResourcesCompat.getColor(getResources(), R.color.green,
-                        null),
-                R.drawable.ic_twotone_trending_up_24,
-                "5"));
-
-        PreferenceStorageManager.addStockItemToSection(Constants.PORTFOLIO_KEY, new StockItem(
-                "AAPL",
-                "Apple Inc",
-                "108.86",
-                "6.46",
-                ResourcesCompat.getColor(getResources(), R.color.red,
-                        null),
-                R.drawable.ic_baseline_trending_down_24,
-                "5"));
-
-        PreferenceStorageManager.addStockItemToSection(Constants.PORTFOLIO_KEY, new StockItem(
-                "TSLA",
-                "Tesla Inc",
-                "388.04",
-                "22.79",
-                ResourcesCompat.getColor(getResources(), R.color.red,
-                        null),
-                R.drawable.ic_baseline_trending_down_24,
-                "3"));
-
         return PreferenceStorageManager.getSectionStockList(Constants.PORTFOLIO_KEY);
     }
 
     private List<StockItem> getFavorites() {
-        PreferenceStorageManager.addStockItemToSection(Constants.FAVORITE_KEY, new StockItem(
-                "NFLX",
-                "Netflix Inc",
-                "475.74",
-                "28.47",
-                ResourcesCompat.getColor(getResources(), R.color.red,
-                        null),
-                R.drawable.ic_baseline_trending_down_24));
-        PreferenceStorageManager.addStockItemToSection(Constants.FAVORITE_KEY, new StockItem(
-                "GOOGL",
-                "Google Corp",
-                "1616.11",
-                "59.23",
-                ResourcesCompat.getColor(getResources(), R.color.green,
-                        null),
-                R.drawable.ic_twotone_trending_up_24,
-                "5"));
-
-        PreferenceStorageManager.addStockItemToSection(Constants.FAVORITE_KEY, new StockItem(
-                "AAPL",
-                "Apple Inc",
-                "108.86",
-                "6.46",
-                ResourcesCompat.getColor(getResources(), R.color.red,
-                        null),
-                R.drawable.ic_baseline_trending_down_24,
-                "5"));
-
-        PreferenceStorageManager.addStockItemToSection(Constants.FAVORITE_KEY, new StockItem(
-                "IBM",
-                "International Business Machines Corp",
-                "111.66",
-                "2.75",
-                ResourcesCompat.getColor(getResources(), R.color.green,
-                        null),
-                R.drawable.ic_twotone_trending_up_24));
-
-        PreferenceStorageManager.addStockItemToSection(Constants.FAVORITE_KEY, new StockItem(
-                "TSLA",
-                "Tesla Inc",
-                "388.04",
-                "22.79",
-                ResourcesCompat.getColor(getResources(), R.color.red,
-                        null),
-                R.drawable.ic_baseline_trending_down_24,
-                "3"));
-
-
         return PreferenceStorageManager.getSectionStockList(Constants.FAVORITE_KEY);
     }
 
@@ -206,12 +119,14 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
             }
         });
 
-        homeFooterView.setOnClickListener(v -> {
-            Uri url = Uri.parse("https://www.tiingo.com/");
-            Intent launchBrowser = new Intent(Intent.ACTION_VIEW);
-            launchBrowser.setData(url);
-            startActivity(launchBrowser);
-        });
+        recyclerView.setNestedScrollingEnabled(false);
+
+//        homeFooterView.setOnClickListener(v -> {
+//            Uri url = Uri.parse("https://www.tiingo.com/");
+//            Intent launchBrowser = new Intent(Intent.ACTION_VIEW);
+//            launchBrowser.setData(url);
+//            startActivity(launchBrowser);
+//        });
 
         enableSwipeToDelete();
     }

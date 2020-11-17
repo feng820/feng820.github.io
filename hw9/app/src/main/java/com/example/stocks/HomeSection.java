@@ -25,7 +25,6 @@ public class HomeSection extends Section {
 
     static class StockItemUpdate { }
 
-
     private List<StockItem> stockList;
     private final ClickListener clickListener;
     private final String sectionKey;
