@@ -1,4 +1,4 @@
-package com.example.stocks;
+package com.example.stocks.fragment;
 
 import android.content.Intent;
 import android.graphics.Rect;
@@ -20,11 +20,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.stocks.R;
 import com.example.stocks.adapter.StockSectionedRecyclerViewAdapter;
 import com.example.stocks.network.DataService;
 import com.example.stocks.network.GsonCallBack;
 import com.example.stocks.utils.Constants;
 import com.example.stocks.utils.PreferenceStorageManager;
+import com.example.stocks.utils.StockItem;
+import com.example.stocks.utils.SwipeAndDragDropCallBack;
+import com.example.stocks.viewholder.HomeSection;
+import com.example.stocks.viewholder.StockItemViewHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -202,7 +207,7 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
                     SectionAdapter sectionAdapter = sectionedAdapter.getAdapterForSection(favoriteSection);
                     favoriteSection.deleteStockItemByIndex(position);
                     sectionAdapter.notifyItemRemoved(position);
-                    sectionAdapter.notifyItemRangeChanged(position, favoriteSection.getContentItemsTotal());
+                    sectionAdapter.notifyItemRangeChanged(position, favoriteSection.getContentItemsTotal() - position);
                 }
             }
         };

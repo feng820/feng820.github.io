@@ -1,25 +1,27 @@
-package com.example.stocks;
+package com.example.stocks.viewholder;
 
-import android.graphics.Color;
 import android.view.View;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.stocks.R;
 import com.example.stocks.utils.Constants;
 import com.example.stocks.utils.PreferenceStorageManager;
+import com.example.stocks.utils.StockItem;
+import com.example.stocks.viewholder.PortfolioHeaderViewHolder;
+import com.example.stocks.viewholder.StockItemViewHolder;
 
 import java.util.Collections;
 import java.util.List;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
-import io.github.luizgrp.sectionedrecyclerviewadapter.SectionAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.utils.EmptyViewHolder;
 
 public class HomeSection extends Section {
-    interface ClickListener {
+    public interface ClickListener {
         void onItemRootViewClicked(String sectionKey, StockItem stockItem, int itemAdapterPosition);
     }
 
@@ -31,7 +33,7 @@ public class HomeSection extends Section {
 
     private static final String TAG = "HomeSection";
 
-    HomeSection(List<StockItem> stockList, ClickListener clickListener, boolean isPortfolio) {
+    public HomeSection(List<StockItem> stockList, ClickListener clickListener, boolean isPortfolio) {
         super(SectionParameters.builder()
                 .headerResourceId(isPortfolio ? R.layout.home_portfolio_header : R.layout.home_favorite_header)
                 .itemResourceId(R.layout.home_stock_item)

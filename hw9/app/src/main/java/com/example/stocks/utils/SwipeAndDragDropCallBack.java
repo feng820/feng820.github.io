@@ -1,4 +1,4 @@
-package com.example.stocks;
+package com.example.stocks.utils;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -15,10 +15,10 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.stocks.viewholder.HomeSection;
+import com.example.stocks.R;
+import com.example.stocks.viewholder.StockItemViewHolder;
 import com.example.stocks.adapter.StockSectionedRecyclerViewAdapter;
-import com.example.stocks.utils.Constants;
-
-import io.github.luizgrp.sectionedrecyclerviewadapter.SectionAdapter;
 
 abstract public class SwipeAndDragDropCallBack extends ItemTouchHelper.Callback {
     public interface ItemTouchHelperContract {
@@ -36,7 +36,7 @@ abstract public class SwipeAndDragDropCallBack extends ItemTouchHelper.Callback 
     private int intrinsicHeight;
     private final StockSectionedRecyclerViewAdapter adapter;
 
-    SwipeAndDragDropCallBack(Context context, StockSectionedRecyclerViewAdapter adapter) {
+    public SwipeAndDragDropCallBack(Context context, StockSectionedRecyclerViewAdapter adapter) {
         mContext = context;
         mBackground = new ColorDrawable();
         backgroundColor = Color.parseColor("#b80f0a");

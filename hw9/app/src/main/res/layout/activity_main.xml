@@ -16,7 +16,7 @@
 
     <fragment
         android:id="@+id/home_fragment"
-        android:name="com.example.stocks.HomeFragment"
+        android:name="com.example.stocks.fragment.HomeFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

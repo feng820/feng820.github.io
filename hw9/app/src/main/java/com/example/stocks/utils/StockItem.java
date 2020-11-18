@@ -1,4 +1,4 @@
-package com.example.stocks;
+package com.example.stocks.utils;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
@@ -9,25 +9,25 @@ import java.util.Objects;
 
 public class StockItem{
 
-    final String stockTicker;
-    String stockName;
-    String stockPrice;
-    String stockInfo;
-    String stockPriceChange;
+    public final String stockTicker;
+    public String stockName;
+    public String stockPrice;
+    public String stockInfo;
+    public String stockPriceChange;
     @ColorInt
-    int stockChangeColor;
+    public int stockChangeColor;
     @DrawableRes
-    int stockPriceChangeIcon;
+    public int stockPriceChangeIcon;
     String stockShares;
 
-    StockItem(@NonNull final String stockTicker, String stockName, @NonNull String stockPrice,
+    public StockItem(@NonNull final String stockTicker, String stockName, @NonNull String stockPrice,
               String stockPriceChange, @ColorInt int stockChangeColor,
               @DrawableRes int stockPriceChangeIcon) {
         this(stockTicker, stockName, stockPrice, stockPriceChange, stockChangeColor,
                 stockPriceChangeIcon, "0");
     }
 
-    StockItem(@NonNull final String stockTicker, String stockName, @NonNull String stockPrice,
+    public StockItem(@NonNull final String stockTicker, String stockName, @NonNull String stockPrice,
               String stockPriceChange, @ColorInt int stockChangeColor,
               @DrawableRes int stockPriceChangeIcon, String stockShares) {
         this.stockTicker = stockTicker;

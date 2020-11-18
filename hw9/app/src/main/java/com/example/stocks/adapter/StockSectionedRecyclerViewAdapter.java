@@ -2,10 +2,10 @@ package com.example.stocks.adapter;
 
 import android.graphics.Color;
 
-import com.example.stocks.HomeSection;
+import com.example.stocks.viewholder.HomeSection;
 import com.example.stocks.R;
-import com.example.stocks.StockItemViewHolder;
-import com.example.stocks.SwipeAndDragDropCallBack;
+import com.example.stocks.viewholder.StockItemViewHolder;
+import com.example.stocks.utils.SwipeAndDragDropCallBack;
 import com.example.stocks.utils.StockApplication;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
