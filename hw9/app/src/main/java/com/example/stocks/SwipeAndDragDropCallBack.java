@@ -20,7 +20,7 @@ import com.example.stocks.utils.Constants;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionAdapter;
 
-abstract public class SwipeToDeleteCallBack extends ItemTouchHelper.Callback {
+abstract public class SwipeAndDragDropCallBack extends ItemTouchHelper.Callback {
     public interface ItemTouchHelperContract {
         void onRowMoved(int fromPosition, int toPosition, HomeSection section);
         void onRowSelected(StockItemViewHolder myViewHolder);
@@ -36,7 +36,7 @@ abstract public class SwipeToDeleteCallBack extends ItemTouchHelper.Callback {
     private int intrinsicHeight;
     private final StockSectionedRecyclerViewAdapter adapter;
 
-    SwipeToDeleteCallBack(Context context, StockSectionedRecyclerViewAdapter adapter) {
+    SwipeAndDragDropCallBack(Context context, StockSectionedRecyclerViewAdapter adapter) {
         mContext = context;
         mBackground = new ColorDrawable();
         backgroundColor = Color.parseColor("#b80f0a");

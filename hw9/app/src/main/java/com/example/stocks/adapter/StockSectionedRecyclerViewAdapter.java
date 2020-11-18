@@ -5,13 +5,13 @@ import android.graphics.Color;
 import com.example.stocks.HomeSection;
 import com.example.stocks.R;
 import com.example.stocks.StockItemViewHolder;
-import com.example.stocks.SwipeToDeleteCallBack;
+import com.example.stocks.SwipeAndDragDropCallBack;
 import com.example.stocks.utils.StockApplication;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 public class StockSectionedRecyclerViewAdapter extends SectionedRecyclerViewAdapter
-        implements SwipeToDeleteCallBack.ItemTouchHelperContract {
+        implements SwipeAndDragDropCallBack.ItemTouchHelperContract {
 
 
     @Override

@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -15,23 +14,26 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.stocks.adapter.StockSectionedRecyclerViewAdapter;
+import com.example.stocks.network.DataService;
+import com.example.stocks.network.GsonCallBack;
 import com.example.stocks.utils.Constants;
 import com.example.stocks.utils.PreferenceStorageManager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionAdapter;
-import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 
 public class HomeFragment extends Fragment implements HomeSection.ClickListener {
@@ -44,6 +46,7 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
     private final Handler handler = new Handler();
     private static final String TAG = "HomeFragment";
 
+    private View homeRootView;
     private View homeContentView;
     private View homeProgressView;
     private TextView homeFooterView;
@@ -53,18 +56,7 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View homeRootView = inflater.inflate(R.layout.fragment_home, container, false);
-
-        sectionedAdapter = new StockSectionedRecyclerViewAdapter();
-//        PreferenceStorageManager.clearAll();
-        portfolioSection = new HomeSection(getPortfolio(), this, true);
-        favoriteSection = new HomeSection(getFavorites(), this, false);
-        recyclerView = homeRootView.findViewById(R.id.recyclerview);
-
-        homeContentView = homeRootView.findViewById(R.id.home_content);
-        homeProgressView = homeRootView.findViewById(R.id.progress_content);
-//        homeFooterView = homeRootView.findViewById(R.id.footer);
-
+        homeRootView = inflater.inflate(R.layout.fragment_home, container, false);
         return homeRootView;
     }
 
@@ -72,40 +64,36 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        sectionedAdapter = new StockSectionedRecyclerViewAdapter();
+        recyclerView = homeRootView.findViewById(R.id.recyclerview);
+        homeContentView = homeRootView.findViewById(R.id.home_content);
+        homeProgressView = homeRootView.findViewById(R.id.progress_content);
+        homeFooterView = homeRootView.findViewById(R.id.footer);
+
         homeContentView.setVisibility(View.GONE);
 
-        initHomeContentView(recyclerView);
-
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            homeProgressView.setVisibility(View.GONE);
-            homeContentView.setVisibility(View.VISIBLE);
-        }, 2000);
-
+        initHomeRecyclerView(recyclerView);
     }
 
     @Override
     public void onItemRootViewClicked(String sectionKey, StockItem stockItem, int itemAdapterPosition) {
-//
 //        Toast.makeText(getActivity(), "Item:" + stockItem.stockTicker + "index: " +  itemAdapterPosition,
 //                Toast.LENGTH_SHORT).show();
 //        Log.e(TAG, "onItemRootViewClicked: clicked");
 
     }
 
-    private List<StockItem> getPortfolio() {
-        return PreferenceStorageManager.getSectionStockList(Constants.PORTFOLIO_KEY);
-    }
+    private void initHomeRecyclerView(RecyclerView recyclerView) {
+        homeFooterView.setOnClickListener(v -> {
+            Uri url = Uri.parse("https://www.tiingo.com/");
+            Intent launchBrowser = new Intent(Intent.ACTION_VIEW);
+            launchBrowser.setData(url);
+            startActivity(launchBrowser);
+        });
 
-    private List<StockItem> getFavorites() {
-        return PreferenceStorageManager.getSectionStockList(Constants.FAVORITE_KEY);
-    }
-
-    private void initHomeContentView(RecyclerView recyclerView) {
-        sectionedAdapter.addSection(portfolioSection);
-        sectionedAdapter.addSection(favoriteSection);
+        enableSwipeAndDragDrop();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(sectionedAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL) {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
@@ -121,18 +109,66 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
 
         recyclerView.setNestedScrollingEnabled(false);
 
-//        homeFooterView.setOnClickListener(v -> {
-//            Uri url = Uri.parse("https://www.tiingo.com/");
-//            Intent launchBrowser = new Intent(Intent.ACTION_VIEW);
-//            launchBrowser.setData(url);
-//            startActivity(launchBrowser);
-//        });
-
-        enableSwipeToDelete();
+        fetchLatestData();
     }
 
-    private void enableSwipeToDelete() {
-        SwipeToDeleteCallBack swipeToDeleteCallBack = new SwipeToDeleteCallBack(getContext(), sectionedAdapter) {
+    private void fetchLatestData() {
+        List<StockItem> portfolioList = PreferenceStorageManager.getSectionStockList(Constants.PORTFOLIO_KEY);
+        List<StockItem> favoriteList = PreferenceStorageManager.getSectionStockList(Constants.FAVORITE_KEY);
+
+        Set<StockItem> allUniqueStockItems = new HashSet<>();
+        allUniqueStockItems.addAll(portfolioList);
+        allUniqueStockItems.addAll(favoriteList);
+
+        List<String> tickers = new ArrayList<>();
+        for (StockItem item : allUniqueStockItems) {
+            tickers.add(item.stockTicker);
+        }
+
+        DataService.getInstance().fetchLatestHomeData(tickers, new GsonCallBack<List<Map<String, String>>>() {
+            @Override
+            public void onSuccess(List<Map<String, String>> result) throws Exception {
+                Map<String, Map<String, String>> latestMap = new HashMap<>();
+                for (Map<String, String> entry : result) {
+                    latestMap.put(entry.get("ticker"), entry);
+                }
+
+                updateSectionList(Constants.PORTFOLIO_KEY, portfolioList, latestMap);
+                updateSectionList(Constants.FAVORITE_KEY, favoriteList, latestMap);
+
+                portfolioSection = new HomeSection(portfolioList, HomeFragment.this, true);
+                favoriteSection = new HomeSection(favoriteList, HomeFragment.this, false);
+                sectionedAdapter.addSection(portfolioSection);
+                sectionedAdapter.addSection(favoriteSection);
+                recyclerView.setAdapter(sectionedAdapter);
+
+                homeProgressView.setVisibility(View.GONE);
+                homeContentView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onError(String result) throws Exception {
+                Log.e(TAG, "onError: Cannot Fetch Latest Data due to " + result);
+            }
+        });
+    }
+
+    private void updateSectionList(String key, List<StockItem> sectionList, Map<String, Map<String, String>> latestMap) {
+        for (StockItem item : sectionList) {
+            Map<String, String> obj = latestMap.get(item.stockTicker);
+            double change = Double.parseDouble(String.valueOf(obj.get("change")));
+
+            item.stockChangeColor = change > 0 ? getContext().getColor(R.color.green) : getContext().getColor(R.color.red);
+            item.stockPriceChangeIcon = change > 0 ? R.drawable.ic_twotone_trending_up_24 : R.drawable.ic_baseline_trending_down_24;
+            item.stockPrice = String.valueOf(obj.get("price"));
+            item.stockPriceChange = String.valueOf(Math.abs(change));
+        }
+
+        PreferenceStorageManager.updateStorage(key, sectionList);
+    }
+
+    private void enableSwipeAndDragDrop() {
+        SwipeAndDragDropCallBack swipeAndDragDropCallBack = new SwipeAndDragDropCallBack(getContext(), sectionedAdapter) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder source, @NonNull RecyclerView.ViewHolder target) {
                 if (!(source instanceof StockItemViewHolder) || !(target instanceof StockItemViewHolder)) {
@@ -170,7 +206,7 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
                 }
             }
         };
-        ItemTouchHelper itemSwipeHelper = new ItemTouchHelper(swipeToDeleteCallBack);
+        ItemTouchHelper itemSwipeHelper = new ItemTouchHelper(swipeAndDragDropCallBack);
         itemSwipeHelper.attachToRecyclerView(recyclerView);
     }
 }
