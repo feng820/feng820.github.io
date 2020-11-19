@@ -8,6 +8,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -35,6 +36,7 @@ abstract public class SwipeAndDragDropCallBack extends ItemTouchHelper.Callback 
     private int intrinsicWidth;
     private int intrinsicHeight;
     private final StockSectionedRecyclerViewAdapter adapter;
+    private static final String TAG = "SwipeAndDragDropCallBac";
 
     public SwipeAndDragDropCallBack(Context context, StockSectionedRecyclerViewAdapter adapter) {
         mContext = context;
@@ -87,14 +89,17 @@ abstract public class SwipeAndDragDropCallBack extends ItemTouchHelper.Callback 
         }
     }
 
-    // Set the direction of swipe.
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-        final StockItemViewHolder stockItemViewHolder = (StockItemViewHolder) viewHolder;
-        int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-        int swipeFlags = stockItemViewHolder.sectionKey.equals(Constants.FAVORITE_KEY)
-                ? ItemTouchHelper.LEFT : 0;
-        return makeMovementFlags(dragFlags, swipeFlags);
+        if (viewHolder instanceof StockItemViewHolder) {
+            final StockItemViewHolder stockItemViewHolder = (StockItemViewHolder) viewHolder;
+            int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+            int swipeFlags = stockItemViewHolder.sectionKey.equals(Constants.FAVORITE_KEY)
+                    ? ItemTouchHelper.LEFT : 0;
+            return makeMovementFlags(dragFlags, swipeFlags);
+        } else {
+            return makeMovementFlags(0, 0);
+        }
     }
 
     // Here we’ll create our custom view that shows that the swipe is happening.

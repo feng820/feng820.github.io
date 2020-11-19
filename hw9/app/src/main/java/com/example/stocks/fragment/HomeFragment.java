@@ -96,8 +96,7 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
             startActivity(launchBrowser);
         });
 
-        enableSwipeAndDragDrop();
-
+        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL) {
             @Override
@@ -111,9 +110,8 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
 //                }
             }
         });
-
-        recyclerView.setNestedScrollingEnabled(false);
-
+        
+        enableSwipeAndDragDrop();
         fetchLatestData();
     }
 
@@ -128,6 +126,18 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
         List<String> tickers = new ArrayList<>();
         for (StockItem item : allUniqueStockItems) {
             tickers.add(item.stockTicker);
+        }
+
+        if (tickers.size() == 0) {
+            portfolioSection = new HomeSection(portfolioList, HomeFragment.this, true);
+            favoriteSection = new HomeSection(favoriteList, HomeFragment.this, false);
+            sectionedAdapter.addSection(portfolioSection);
+            sectionedAdapter.addSection(favoriteSection);
+            recyclerView.setAdapter(sectionedAdapter);
+
+            homeProgressView.setVisibility(View.GONE);
+            homeContentView.setVisibility(View.VISIBLE);
+            return;
         }
 
         DataService.getInstance().fetchLatestHomeData(tickers, new GsonCallBack<List<Map<String, String>>>() {
@@ -199,6 +209,7 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                Log.e(TAG, "onSwiped: trigger on swipe" );
                 final StockItemViewHolder stockItemViewHolder = (StockItemViewHolder) viewHolder;
                 String sectionKey = stockItemViewHolder.sectionKey;
 

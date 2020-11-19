@@ -10,8 +10,6 @@ import com.example.stocks.R;
 import com.example.stocks.utils.Constants;
 import com.example.stocks.utils.PreferenceStorageManager;
 import com.example.stocks.utils.StockItem;
-import com.example.stocks.viewholder.PortfolioHeaderViewHolder;
-import com.example.stocks.viewholder.StockItemViewHolder;
 
 import java.util.Collections;
 import java.util.List;
@@ -119,7 +117,6 @@ public class HomeSection extends Section {
                 Collections.swap(stockList, i, i - 1);
             }
         }
-//        sectionAdapter.notifyItemMoved(fromPosition, toPosition);
         PreferenceStorageManager.updateStorage(sectionKey, stockList);
     }
 
