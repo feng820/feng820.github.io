@@ -10,6 +10,9 @@ const __dirname = path.resolve();
 const TINNGO_API_KEY = 'ce4fc028989a34eaf097d57dfd14d50604c63cbd';
 const NEWS_API_KEY = 'dfebb169ecb64e2ebb9823dcd0b60c44'
 
+app.use(cors());
+app.use(express.static(path.join(__dirname, 'dist')))
+
 app.get('/api/outlook/:ticker', (req, res) => {
     const url = 'https://api.tiingo.com/tiingo/daily/' + req.params.ticker;
     axios.get(url, {
@@ -236,12 +239,8 @@ app.get('/api/news/:ticker', (req, res) => {
     });
 });
 
-app.use(cors());
-app.use(express.static(path.join(__dirname, 'dist')))
-
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
-
 
 app.listen(port);
