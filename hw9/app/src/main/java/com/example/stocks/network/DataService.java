@@ -81,25 +81,47 @@ public class DataService {
     }
 
 
-//    public void getAutoSuggestions(String ticker, GsonCallBack<Map<String, String>> callback) {
-//        String url = BASE_URL + "outlook/" + ticker;
-//        GsonRequest<Map<String, String>> jsonObjectRequest = new GsonRequest
-//                (url, Map.class, null,
-//                        (Response.Listener<Map<String, String>>) response -> {
-//                            if (response != null) {
-//                                try {
-//                                    callback.onSuccess(response);
-//                                } catch (Exception e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                        }, error -> {
-//                            if (error.getMessage() != null && error.getMessage().length() > 0) {
-//                                Log.d("error", error.getMessage());
-//                            }
-//
-//                        });
-//
-//        VolleyController.getInstance(StockApplication.getContext()).addToRequestQueue(jsonObjectRequest);
-//    }
+    public void fetchStockOutlook(String ticker, GsonCallBack<Map<String, String>> callback) {
+        String url = BASE_URL + "outlook/" + ticker;
+        GsonRequest<Map<String, String>> jsonObjectRequest = new GsonRequest
+                (url, Map.class, null,
+                        (Response.Listener<Map<String, String>>) response -> {
+                            if (response != null) {
+                                try {
+                                    callback.onSuccess(response);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, error -> {
+                            if (error.getMessage() != null && error.getMessage().length() > 0) {
+                                Log.d("error", error.getMessage());
+                            }
+
+                        });
+
+        VolleyController.getInstance().addToRequestQueue(jsonObjectRequest);
+    }
+
+    public void fetchStockSummary(String ticker, GsonCallBack<Map<String, String>> callback) {
+        String url = BASE_URL + "summary/" + ticker;
+        GsonRequest<Map<String, String>> jsonObjectRequest = new GsonRequest
+                (url, Map.class, null,
+                        (Response.Listener<Map<String, String>>) response -> {
+                            if (response != null) {
+                                try {
+                                    callback.onSuccess(response);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, error -> {
+                    if (error.getMessage() != null && error.getMessage().length() > 0) {
+                        Log.d("error", error.getMessage());
+                    }
+
+                });
+
+        VolleyController.getInstance().addToRequestQueue(jsonObjectRequest);
+    }
 }

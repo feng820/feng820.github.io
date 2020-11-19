@@ -24,6 +24,10 @@ public class AutoSuggestAdapter extends ArrayAdapter<String> implements Filterab
         suggestionList.addAll(list);
     }
 
+    public List<String> getSuggestionList() {
+        return suggestionList;
+    }
+
     @Override
     public int getCount() {
         return suggestionList.size();

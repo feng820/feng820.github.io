@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.stocks.R;
+import com.example.stocks.activity.MainActivity;
+import com.example.stocks.activity.StockDetailActivity;
 import com.example.stocks.adapter.StockSectionedRecyclerViewAdapter;
 import com.example.stocks.network.DataService;
 import com.example.stocks.network.GsonCallBack;
@@ -81,11 +83,10 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
     }
 
     @Override
-    public void onItemRootViewClicked(String sectionKey, StockItem stockItem, int itemAdapterPosition) {
-//        Toast.makeText(getActivity(), "Item:" + stockItem.stockTicker + "index: " +  itemAdapterPosition,
-//                Toast.LENGTH_SHORT).show();
-//        Log.e(TAG, "onItemRootViewClicked: clicked");
-
+    public void onItemArrowClicked(String ticker) {
+        Intent intent = new Intent(getContext(), StockDetailActivity.class);
+        intent.putExtra("ticker", ticker);
+        getContext().startActivity(intent);
     }
 
     private void initHomeRecyclerView(RecyclerView recyclerView) {
@@ -173,10 +174,18 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
             Map<String, String> obj = latestMap.get(item.stockTicker);
             double change = Double.parseDouble(String.valueOf(obj.get("change")));
 
-            item.stockChangeColor = change > 0 ? getContext().getColor(R.color.green) : getContext().getColor(R.color.red);
-            item.stockPriceChangeIcon = change > 0 ? R.drawable.ic_twotone_trending_up_24 : R.drawable.ic_baseline_trending_down_24;
             item.stockPrice = String.valueOf(obj.get("price"));
             item.stockPriceChange = String.valueOf(Math.abs(change));
+
+            if (change > 0) {
+                item.stockChangeColor = getContext().getColor(R.color.green);
+                item.stockPriceChangeIcon = R.drawable.ic_twotone_trending_up_24;
+            } else if (change < 0) {
+                item.stockChangeColor = getContext().getColor(R.color.red);
+                item.stockPriceChangeIcon = R.drawable.ic_baseline_trending_down_24;
+            } else {
+                item.stockChangeColor = getContext().getColor(R.color.grey);
+            }
         }
 
         PreferenceStorageManager.updateStorage(key, sectionList);

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>highcharts</title>
+   
+</head>
+<body>
+    <div id="container" style="height: 300px; width: 100%;"></div>
+    
+</body>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/drag-panes.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/indicators/indicators.js"></script>
+<script src="https://code.highcharts.com/stock/indicators/volume-by-price.js"></script>
+<script>
+    function getURLParameter(sParam) {
+        let sPageURL = window.location.search.substring(1);
+        let sURLVariables = sPageURL.split('&');
+        for (let i = 0; i < sURLVariables.length; i++) {
+            let sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) 
+            {
+                return sParameterName[1];
+            }
+        }
+    }
+
+    const groupingUnits = [['week', [1]], ['month',[1, 2, 3, 4, 6]]];
+
+    const ticker = getURLParameter('ticker');
+    const url = "http://linfengj-571-hw8.us-east-1.elasticbeanstalk.com/api/history/" + ticker;
+    fetch(url, {
+        method: 'GET',
+    })
+    .then(res => {
+        return res.json();
+    })
+    .then(chartsData => {
+        if (ticker === undefined) {
+            return;
+        }
+        const date = chartsData.date_array;
+        const open = chartsData.open_price_array;
+        const high = chartsData.high_price_array;
+        const low = chartsData.low_price_array;
+        const close = chartsData.close_price_array;
+        const volume = chartsData.volume_array;
+
+        const volumeData = [];
+        const ohlcData = [];
+        for (let i = 0; i < date.length; i++) {
+          ohlcData.push([
+              date[i],
+              open[i],
+              high[i],
+              low[i],
+              close[i]
+          ]);
+
+          volumeData.push([
+              date[i],
+              volume[i]
+          ]);
+        }
+
+        Highcharts.stockChart('container', {
+
+            rangeSelector: {
+                selected: 2
+            },
+
+            plotOptions: {
+                series: {
+                    dataGrouping: {
+                        units: groupingUnits
+                    }
+                }
+            },
+
+            yAxis: [{
+                startOnTick: false,
+                endOnTick: false,
+                labels: {
+                    align: 'right',
+                    x: -3
+                },
+                title: {
+                    text: 'OHLC'
+                },
+                height: '60%',
+                lineWidth: 2,
+                resize: {
+                    enabled: true
+                }
+            }, {
+                labels: {
+                    align: 'right',
+                    x: -3
+                },
+                title: {
+                    text: 'Volume'
+                },
+                top: '65%',
+                height: '35%',
+                offset: 0,
+                lineWidth: 2
+            }],
+
+            tooltip: {
+                split: true
+            },
+
+            series: [{
+                type: 'candlestick',
+                name: ticker,
+                id: ticker,
+                zIndex: 2,
+                data: ohlcData
+            }, {
+                type: 'column',
+                name: 'Volume',
+                id: 'volume',
+                data: volumeData,
+                yAxis: 1
+            }, {
+                type: 'vbp',
+                linkedTo: ticker,
+                params: {
+                    volumeSeriesID: 'volume'
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                zoneLines: {
+                    enabled: false
+                }
+            }, {
+                type: 'sma',
+                linkedTo: ticker,
+                zIndex: 1,
+                marker: {
+                    enabled: false
+                }
+            }]
+        });
+
+    });
+</script>
+</html>

@@ -20,7 +20,7 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.utils.EmptyViewHolder;
 
 public class HomeSection extends Section {
     public interface ClickListener {
-        void onItemRootViewClicked(String sectionKey, StockItem stockItem, int itemAdapterPosition);
+        void onItemArrowClicked(String ticker);
     }
 
     static class StockItemUpdate { }
@@ -83,9 +83,8 @@ public class HomeSection extends Section {
         stockItemViewHolder.stockPriceChangeView.setTextColor(stockItem.stockChangeColor);
         stockItemViewHolder.stockPriceChangeIconView.setImageResource(stockItem.stockPriceChangeIcon);
 
-        stockItemViewHolder.rootView.setOnClickListener(v ->
-                clickListener.onItemRootViewClicked
-                        (sectionKey, stockItem, stockItemViewHolder.getAdapterPosition()));
+        stockItemViewHolder.arrowRightImage.setOnClickListener(v ->
+                clickListener.onItemArrowClicked(stockItem.stockTicker));
     }
 
     @Override
