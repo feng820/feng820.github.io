@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:text="MSFT"
-                    android:textSize="18sp"
+                    android:textSize="25sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:text="$210.08"
-                    android:textSize="18sp"
+                    android:textSize="25sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -64,8 +64,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:text="Microsoft Corporation"
-                    android:textColor="@android:color/darker_gray"
-                    android:textSize="12sp"
+                    android:textColor="@color/grey"
+                    android:textSize="15dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/stock_detail_ticker" />
@@ -76,7 +76,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:text="$6.15"
-                    android:textSize="12sp"
+                    android:textSize="15dp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/stock_detail_price" />
@@ -90,6 +90,186 @@
                 app:layout_constraintTop_toBottomOf="@id/stock_summary">
 
             </WebView>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/detail_portfolio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/highchart">
+
+                <TextView
+                    android:id="@+id/portfolio_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Portfolio"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/portfolio_first_line"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="30dp"
+                    android:gravity="center"
+                    android:text="You have 0 shares of NFLX."
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/portfolio_text" />
+
+                <TextView
+                    android:id="@+id/portfolio_second_line"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:gravity="center"
+                    android:text="Start Trading!"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/portfolio_first_line" />
+
+                <Button
+                    android:id="@+id/button"
+                    android:layout_width="120dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/rounded_corners_without_border"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:text="TRADE"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/portfolio_text" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/detail_portfolio">
+
+                <TextView
+                    android:id="@+id/stats_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Stats"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <GridLayout
+                    android:id="@+id/stats_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:columnCount="3"
+                    android:rowCount="3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/stats_text">
+
+                    <TextView
+                        android:id="@+id/current_price"
+                        android:layout_width="0dp"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:text="Current Price: 210.08"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/low"
+                        android:layout_width="0dp"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:text="Low: 208.1"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/bid_price"
+                        android:layout_width="0dp"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:text="Bid Price: 0.0"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/open_price"
+                        android:layout_width="0dp"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:text="OpenPrice: 213.85"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/mid"
+                        android:layout_width="0dp"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:text="Mid: 0.0"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/high"
+                        android:layout_width="0dp"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:text="High: 216.3399"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/volume"
+                        android:layout_width="0dp"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:text="Volume: 36,465,546.00"
+                        android:textSize="15sp" />
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/low"-->
+                    <!--                        android:layout_width="100dp"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginStart="30dp"-->
+                    <!--                        android:text="Current Price: 210.08"-->
+                    <!--                        android:textSize="12sp" />-->
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/bid_price"-->
+                    <!--                        android:layout_width="100dp"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginStart="30dp"-->
+                    <!--                        android:text="Current Price: 210.08"-->
+                    <!--                        android:textSize="12sp" />-->
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/open_price"-->
+                    <!--                        android:layout_width="100dp"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginStart="30dp"-->
+                    <!--                        android:text="Current Price: 210.08"-->
+                    <!--                        android:textSize="12sp" />-->
+                </GridLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

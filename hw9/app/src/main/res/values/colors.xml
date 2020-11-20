@@ -7,5 +7,5 @@
     <color name="green">#1fad1f</color>
     <color name="section_header_color">#e6e6e6</color>
     <color name="white">@android:color/white</color>
-    <color name="grey">@android:color/darker_gray</color>
+    <color name="grey">#666666</color>
 </resources>
