@@ -33,6 +33,8 @@ import com.example.stocks.utils.SwipeAndDragDropCallBack;
 import com.example.stocks.viewholder.HomeSection;
 import com.example.stocks.viewholder.StockItemViewHolder;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,6 +59,8 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
     private View homeContentView;
     private View homeProgressView;
     private TextView homeFooterView;
+    private TextView dateView;
+
 
     @Nullable
     @Override
@@ -76,6 +80,7 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
         homeContentView = homeRootView.findViewById(R.id.home_content);
         homeProgressView = homeRootView.findViewById(R.id.progress_content);
         homeFooterView = homeRootView.findViewById(R.id.footer);
+        dateView = homeRootView.findViewById(R.id.date);
 
         homeContentView.setVisibility(View.GONE);
 
@@ -111,8 +116,9 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
 //                }
             }
         });
-        
+
         enableSwipeAndDragDrop();
+        updateCurrentDate();
         fetchLatestData();
     }
 
@@ -233,5 +239,12 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
         };
         ItemTouchHelper itemSwipeHelper = new ItemTouchHelper(swipeAndDragDropCallBack);
         itemSwipeHelper.attachToRecyclerView(recyclerView);
+    }
+
+    private void updateCurrentDate() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+        LocalDateTime now = LocalDateTime.now();
+        String formattedDate = dtf.format(now);
+        dateView.setText(formattedDate);
     }
 }
