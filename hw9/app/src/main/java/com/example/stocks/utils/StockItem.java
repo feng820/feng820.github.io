@@ -18,7 +18,7 @@ public class StockItem{
     public int stockChangeColor;
     @DrawableRes
     public int stockPriceChangeIcon;
-    String stockShares;
+    public String stockShares;
 
     public StockItem(@NonNull final String stockTicker, String stockName, @NonNull String stockPrice,
               String stockPriceChange, @ColorInt int stockChangeColor,

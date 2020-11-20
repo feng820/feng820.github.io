@@ -51,12 +51,21 @@ public class PreferenceStorageManager {
         return sectionStockList;
     }
 
+    public static StockItem getStockItemByTicker(String key, String ticker) {
+        List<StockItem> sectionStockList = getSectionStockList(key);
+        for (StockItem item : sectionStockList) {
+            if (item.stockTicker.equals(ticker)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     public static List<StockItem> getSectionStockList(String key) {
         String jsonList = sharedPreferences.getString(key, null);
         List<StockItem> stockSectionList = new Gson().fromJson(jsonList, new TypeToken<List<StockItem>>(){}.getType());
         return stockSectionList == null ? new ArrayList<>() : stockSectionList;
     }
-
 
     public static void updateStorage(String key, List<StockItem> sectionStockList) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
