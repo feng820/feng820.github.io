@@ -7,9 +7,11 @@ import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -20,6 +22,8 @@ import com.example.stocks.network.GsonCallBack;
 import com.example.stocks.utils.Constants;
 import com.example.stocks.utils.PreferenceStorageManager;
 import com.example.stocks.utils.StockItem;
+
+import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -49,9 +53,11 @@ public class StockDetailActivity extends AppCompatActivity {
     private TextView highPriceView;
     private TextView volumeView;
 
+    // about section
+    private TextView descriptionView;
+    private TextView showButton;
 
     private String queryTicker;
-    private String description;
 
     private static final String TAG = "StockDetailActivity";
     private static final String HIGHCHART_URL = "file:///android_asset/highcharts.html";
@@ -82,6 +88,9 @@ public class StockDetailActivity extends AppCompatActivity {
         highPriceView = findViewById(R.id.high_price);
         volumeView = findViewById(R.id.volume);
 
+        descriptionView = findViewById(R.id.description);
+        showButton = findViewById(R.id.show_button);
+
         detailScrollView.setBackgroundColor(StockDetailActivity.this.getColor(R.color.background_color));
         detailContentView.setVisibility(View.GONE);
 
@@ -111,9 +120,10 @@ public class StockDetailActivity extends AppCompatActivity {
         DataService.getInstance().fetchStockOutlook(queryTicker, new GsonCallBack<Map<String, String>>() {
             @Override
             public void onSuccess(Map<String, String> result) throws Exception {
+                initExpandableText();
                 tickerView.setText(queryTicker);
                 nameView.setText(result.get("name"));
-                description = result.get("description");
+                descriptionView.setText(result.get("description"));
             }
 
             @Override
@@ -209,8 +219,34 @@ public class StockDetailActivity extends AppCompatActivity {
         highChartView.loadUrl(HIGHCHART_URL + "?ticker=" + queryTicker);
     }
 
-    private void initPortfolioData() {
+    private void initExpandableText() {
+        ViewTreeObserver vto = descriptionView.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int lineCount = descriptionView.getLineCount();
+                if (lineCount > 0) {
+                    ViewTreeObserver obs = descriptionView.getViewTreeObserver();
+                    obs.removeOnGlobalLayoutListener(this);
+                    if (lineCount < 2) {
+                        showButton.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+    }
 
+    public void onClickShow(View view) {
+        int lineCount = descriptionView.getLineCount();
+        if (lineCount == 2) {
+            showButton.setText("Show less");
+            descriptionView.setEllipsize(null);
+            descriptionView.setMaxLines(Integer.MAX_VALUE);
+        } else {
+            showButton.setText("Show more...");
+            descriptionView.setEllipsize(TextUtils.TruncateAt.END);
+            descriptionView.setMaxLines(2);
+        }
     }
 
     @Override
