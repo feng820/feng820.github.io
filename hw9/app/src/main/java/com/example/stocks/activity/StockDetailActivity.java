@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.stocks.R;
 import com.example.stocks.adapter.NewsRecyclerViewAdapter;
@@ -375,11 +376,16 @@ public class StockDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        String prefix = "\"" + queryTicker + "\"";
         if (item.getItemId() == R.id.favorite_icon) {
             if (this.isInFavorite) {
                 PreferenceStorageManager.deleteStockItemFromSection(Constants.FAVORITE_KEY, stockItem);
+                String suffix = " was removed from favorites";
+                Toast.makeText(StockDetailActivity.this, prefix + suffix, Toast.LENGTH_SHORT).show();
             } else {
+                String suffix = " was added to favorites";
                 PreferenceStorageManager.addStockItemToSection(Constants.FAVORITE_KEY, stockItem);
+                Toast.makeText(StockDetailActivity.this, prefix + suffix, Toast.LENGTH_SHORT).show();
             }
             this.isInFavorite = !this.isInFavorite;
             invalidateOptionsMenu();
