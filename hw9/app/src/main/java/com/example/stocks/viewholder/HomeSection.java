@@ -144,4 +144,10 @@ public class HomeSection extends Section {
         }
         return -1;
     }
+
+    public void updateStockList(String key) {
+        List<StockItem> newList = PreferenceStorageManager.getSectionStockList(key);
+        this.stockList.clear();
+        this.stockList.addAll(newList);
+    }
 }

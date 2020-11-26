@@ -224,7 +224,6 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                Log.e(TAG, "onSwiped: trigger on swipe" );
                 final StockItemViewHolder stockItemViewHolder = (StockItemViewHolder) viewHolder;
                 String sectionKey = stockItemViewHolder.sectionKey;
 
@@ -246,5 +245,14 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
         LocalDateTime now = LocalDateTime.now();
         String formattedDate = dtf.format(now);
         dateView.setText(formattedDate);
+    }
+
+    @Override
+    public void onResume() {
+        if (favoriteSection != null) {
+            favoriteSection.updateStockList(Constants.FAVORITE_KEY);
+            sectionedAdapter.notifyDataSetChanged();
+        }
+        super.onResume();
     }
 }

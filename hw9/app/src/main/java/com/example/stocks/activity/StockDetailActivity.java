@@ -1,5 +1,6 @@
 package com.example.stocks.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
@@ -12,14 +13,13 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.webkit.WebView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.stocks.R;
@@ -72,7 +72,9 @@ public class StockDetailActivity extends AppCompatActivity {
     private List<NewsItem> newsList = new ArrayList<>();
     private RecyclerView newsRecyclerView;
 
+    private StockItem stockItem;
     private String queryTicker;
+    private boolean isInFavorite;
 
     private static final String TAG = "StockDetailActivity";
     private static final String HIGHCHART_URL = "file:///android_asset/highcharts.html";
@@ -128,6 +130,10 @@ public class StockDetailActivity extends AppCompatActivity {
             queryTicker = intent.getStringExtra("ticker");
         }
 
+        stockItem = new StockItem(queryTicker);
+        StockItem favoriteStock = PreferenceStorageManager.getStockItemByTicker(Constants.FAVORITE_KEY, queryTicker);
+        this.isInFavorite = favoriteStock != null;
+
         fetchStockOutlook();
         fetchStockSummary();
         fetchNewsData();
@@ -139,9 +145,11 @@ public class StockDetailActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Map<String, String> result) throws Exception {
                 initExpandableText();
+                String name = result.get("name");
                 tickerView.setText(queryTicker);
-                nameView.setText(result.get("name"));
+                nameView.setText(name);
                 descriptionView.setText(result.get("description"));
+                stockItem.stockName = name;
             }
 
             @Override
@@ -177,12 +185,20 @@ public class StockDetailActivity extends AppCompatActivity {
 
                 if (change > 0) {
                     changeView.setTextColor(StockDetailActivity.this.getColor(R.color.green));
+                    stockItem.stockChangeColor = StockDetailActivity.this.getColor(R.color.green);
+                    stockItem.stockPriceChangeIcon = R.drawable.ic_twotone_trending_up_24;
                 } else if (change < 0) {
                     changeView.setTextColor(StockDetailActivity.this.getColor(R.color.red));
+                    stockItem.stockChangeColor = StockDetailActivity.this.getColor(R.color.red);
+                    stockItem.stockPriceChangeIcon = R.drawable.ic_baseline_trending_down_24;
                     changeText = "-" + changeText;
                 } else {
                     changeView.setTextColor(StockDetailActivity.this.getColor(R.color.grey));
+                    stockItem.stockChangeColor = StockDetailActivity.this.getColor(R.color.grey);
                 }
+
+                stockItem.stockPrice = currentPrice;
+                stockItem.stockPriceChange = String.valueOf(change);
 
                 String headerPrice = "$" + currentPrice;
                 changeView.setText(changeText);
@@ -212,9 +228,11 @@ public class StockDetailActivity extends AppCompatActivity {
                     decimalFormat.setGroupingUsed(false);
                     double marketValue = Double.parseDouble(portfolioStock.stockShares) * priceDouble;
                     secondLineText = "Market Value: $" + decimalFormat.format(marketValue);
+                    stockItem.updateStockSharesAndInfo(portfolioStock.stockShares);
                 } else {
                     firstLineText = "You have 0 shares of " + queryTicker + ".";
                     secondLineText = "Start Trading!";
+                    stockItem.updateStockSharesAndInfo("0");
                 }
                 portfolioFirstLine.setText(firstLineText);
                 portfoliosSecondLine.setText(secondLineText);
@@ -346,5 +364,28 @@ public class StockDetailActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.stock_detail_toolbar_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.favorite_icon).setIcon(this.isInFavorite ?
+                R.drawable.ic_baseline_star_24 : R.drawable.ic_baseline_star_border_24);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.favorite_icon) {
+            if (this.isInFavorite) {
+                PreferenceStorageManager.deleteStockItemFromSection(Constants.FAVORITE_KEY, stockItem);
+            } else {
+                PreferenceStorageManager.addStockItemToSection(Constants.FAVORITE_KEY, stockItem);
+            }
+            this.isInFavorite = !this.isInFavorite;
+            invalidateOptionsMenu();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 }

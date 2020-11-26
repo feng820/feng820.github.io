@@ -62,6 +62,8 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             Glide.with(ctx)
                     .asBitmap()
                     .load(newsItem.imageUrl)
+                    .error(R.drawable.no_image)
+                    .fallback(R.drawable.no_image)
                     .into(((NewsItemViewHolder) holder).newsImage);
 
             ((NewsItemViewHolder) holder).newsSource.setText(newsItem.newsSource);
@@ -87,6 +89,8 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 Glide.with(ctx)
                         .asBitmap()
                         .load(newsItem.imageUrl)
+                        .error(R.drawable.no_image)
+                        .fallback(R.drawable.no_image)
                         .into(dialogImage);
                 dialogText.setText(newsItem.newsTitle);
 

@@ -20,6 +20,10 @@ public class StockItem{
     public int stockPriceChangeIcon;
     public String stockShares;
 
+    public StockItem(String stockTicker) {
+        this.stockTicker = stockTicker;
+    }
+
     public StockItem(@NonNull final String stockTicker, String stockName, @NonNull String stockPrice,
               String stockPriceChange, @ColorInt int stockChangeColor,
               @DrawableRes int stockPriceChangeIcon) {
@@ -47,7 +51,7 @@ public class StockItem{
     }
 
     public void updateStockSharesAndInfo(String stockShares) {
-        if (this.stockShares.equals(stockShares)) {
+        if (this.stockShares != null && this.stockShares.equals(stockShares)) {
             return;
         }
         this.stockShares = stockShares;

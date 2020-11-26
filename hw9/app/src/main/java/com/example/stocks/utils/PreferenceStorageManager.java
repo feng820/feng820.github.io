@@ -43,6 +43,10 @@ public class PreferenceStorageManager {
 
     public static List<StockItem> deleteStockItemFromSection(String key, StockItem stockItem) {
         List<StockItem> sectionStockList = getSectionStockList(key);
+        if (stockItem == null) {
+            Log.e(TAG, "Empty stock item provided");
+            return sectionStockList;
+        }
         if(!sectionStockList.remove(stockItem)) {
             Log.e(TAG, "deleteStockItemFromSection: This stock item is not in the storage");
         } else {
