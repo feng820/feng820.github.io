@@ -124,4 +124,26 @@ public class DataService {
 
         VolleyController.getInstance().addToRequestQueue(jsonObjectRequest);
     }
+
+    public void fetchNewsData(String ticker, GsonCallBack<List<Map<String, Object>>> callback) {
+        String url = BASE_URL + "news/" + ticker;
+        GsonRequest<List<Map<String, Object>>> jsonObjectRequest = new GsonRequest
+                (url, List.class, null,
+                        (Response.Listener<List<Map<String, Object>>>) response -> {
+                            if (response != null) {
+                                try {
+                                    callback.onSuccess(response);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, error -> {
+                    if (error.getMessage() != null && error.getMessage().length() > 0) {
+                        Log.d("error", error.getMessage());
+                    }
+
+                });
+
+        VolleyController.getInstance().addToRequestQueue(jsonObjectRequest);
+    }
 }

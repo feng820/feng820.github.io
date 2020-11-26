@@ -3,7 +3,7 @@
 <!--    <color name="splash_background">#F2F2F2</color>-->
     <color name="primary_color">#FF6200EE</color>
     <color name="background_color">#f2f2f2</color>
-    <color name="red">@android:color/holo_red_dark</color>
+    <color name="red">#990000</color>
     <color name="green">#1fad1f</color>
     <color name="section_header_color">#e6e6e6</color>
     <color name="white">@android:color/white</color>

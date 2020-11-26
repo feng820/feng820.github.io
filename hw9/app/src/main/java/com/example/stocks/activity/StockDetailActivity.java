@@ -2,13 +2,19 @@ package com.example.stocks.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -17,21 +23,26 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.stocks.R;
+import com.example.stocks.adapter.NewsRecyclerViewAdapter;
 import com.example.stocks.network.DataService;
 import com.example.stocks.network.GsonCallBack;
 import com.example.stocks.utils.Constants;
+import com.example.stocks.utils.NewsItem;
 import com.example.stocks.utils.PreferenceStorageManager;
 import com.example.stocks.utils.StockItem;
 
-import org.w3c.dom.Text;
-
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class StockDetailActivity extends AppCompatActivity {
     private View detailContentView;
     private View progressView;
-    private ScrollView detailScrollView;
+    private NestedScrollView detailScrollView;
 
     // stock info section
     private TextView tickerView;
@@ -56,6 +67,10 @@ public class StockDetailActivity extends AppCompatActivity {
     // about section
     private TextView descriptionView;
     private TextView showButton;
+
+    // news section
+    private List<NewsItem> newsList = new ArrayList<>();
+    private RecyclerView newsRecyclerView;
 
     private String queryTicker;
 
@@ -91,6 +106,8 @@ public class StockDetailActivity extends AppCompatActivity {
         descriptionView = findViewById(R.id.description);
         showButton = findViewById(R.id.show_button);
 
+        newsRecyclerView = findViewById(R.id.news_recycler_view);
+
         detailScrollView.setBackgroundColor(StockDetailActivity.this.getColor(R.color.background_color));
         detailContentView.setVisibility(View.GONE);
 
@@ -113,6 +130,7 @@ public class StockDetailActivity extends AppCompatActivity {
 
         fetchStockOutlook();
         fetchStockSummary();
+        fetchNewsData();
         fetchHighChart();
     }
 
@@ -219,6 +237,74 @@ public class StockDetailActivity extends AppCompatActivity {
         highChartView.loadUrl(HIGHCHART_URL + "?ticker=" + queryTicker);
     }
 
+    private void fetchNewsData() {
+        DataService.getInstance().fetchNewsData(queryTicker, new GsonCallBack<List<Map<String, Object>>>() {
+            @Override
+            public void onSuccess(List<Map<String, Object>> result) throws Exception {
+                 for (Map<String, Object> entry : result) {
+                     String articleUrl = (String) entry.get("url");
+                     String title = (String) entry.get("title");
+                     String imageUrl = (String) entry.get("urlToImage");
+                     String publishedAt = (String) entry.get("publishedAt");
+                     Object sourceMap = entry.get("source");
+                     String sourceName = "";
+                     if (sourceMap instanceof Map) {
+                         sourceName = ((Map<String, String>) sourceMap).get("name");
+                     }
+
+                     @SuppressLint("SimpleDateFormat")
+                     SimpleDateFormat inputFormat = new SimpleDateFormat("MMMM dd, yyyy");
+                     Date publishedDate = inputFormat.parse(publishedAt);
+                     Date todayDate = new Date();
+                     long diff = todayDate.getTime() -  publishedDate.getTime();
+                     long minute = TimeUnit.MILLISECONDS.toMinutes(diff);
+                     long hour   = TimeUnit.MILLISECONDS.toHours(diff);
+                     long day  = TimeUnit.MILLISECONDS.toDays(diff);
+
+                     String ago;
+                     String suffix = " ago";
+
+                     if (minute < 60) {
+                         if (minute == 1) {
+                             ago = minute + " minute" + suffix;
+                         } else {
+                             ago = minute + " minutes" + suffix;
+                         }
+                     } else if (hour < 24) {
+                         if (hour == 1) {
+                             ago = hour + " hour" + suffix;
+                         } else {
+                             ago = hour + " hours" + suffix;
+                         }
+                     } else {
+                         if (day == 1) {
+                             ago = day + " day" + suffix;
+                         } else {
+                             ago = day + " days" + suffix;
+                         }
+                     }
+
+                     newsList.add(new NewsItem(sourceName, title, ago, articleUrl, imageUrl));
+                 }
+
+                initNewsRecyclerView();
+            }
+
+            @Override
+            public void onError(String result) throws Exception {
+                Log.e(TAG, "onError: Cannot Fetch News data due to " + result);
+            }
+        });
+    }
+
+    private void initNewsRecyclerView() {
+        NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(StockDetailActivity.this, newsList);
+        newsRecyclerView.setAdapter(adapter);
+        newsRecyclerView.setLayoutManager(new LinearLayoutManager(StockDetailActivity.this));
+        newsRecyclerView.setNestedScrollingEnabled(false);
+        newsRecyclerView.addItemDecoration(new DividerItemDecoration(newsRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
+    }
+
     private void initExpandableText() {
         ViewTreeObserver vto = descriptionView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -230,6 +316,7 @@ public class StockDetailActivity extends AppCompatActivity {
                     obs.removeOnGlobalLayoutListener(this);
                     if (lineCount < 2) {
                         showButton.setVisibility(View.GONE);
+                        descriptionView.setGravity(Gravity.CENTER);
                     }
                 }
             }
