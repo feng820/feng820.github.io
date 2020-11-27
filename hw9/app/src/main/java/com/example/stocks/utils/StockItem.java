@@ -1,5 +1,7 @@
 package com.example.stocks.utils;
 
+import android.util.Log;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -19,6 +21,8 @@ public class StockItem{
     @DrawableRes
     public int stockPriceChangeIcon;
     public String stockShares;
+
+    private static final String TAG = "StockItem";
 
     public StockItem(String stockTicker) {
         this.stockTicker = stockTicker;
@@ -42,10 +46,10 @@ public class StockItem{
         this.stockPriceChangeIcon = stockPriceChangeIcon;
         this.stockShares = stockShares;
 
-        if (Integer.parseInt(stockShares) == 0) {
+        if (Double.parseDouble(stockShares) == 0) {
             this.stockInfo = this.stockName;
         } else {
-            this.stockInfo = stockShares + ".0 Shares";
+            this.stockInfo = formatShares(stockShares);
         }
 
     }
@@ -55,7 +59,17 @@ public class StockItem{
             return;
         }
         this.stockShares = stockShares;
-        this.stockInfo = Integer.parseInt(stockShares) == 0 ? this.stockName : stockShares + ".0 Shares";
+        this.stockInfo = Double.parseDouble(stockShares) == 0 ? this.stockName : formatShares(stockShares);
+    }
+
+    private String formatShares(String shares) {
+        double sharesDouble = Double.parseDouble(shares);
+        if ((sharesDouble % 1) == 0) {
+            double roundOff = Math.round(sharesDouble * 10.0) / 10.0;
+            return roundOff + " Shares";
+        } else {
+            return sharesDouble + " Shares";
+        }
     }
 
     @Override

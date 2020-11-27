@@ -3,9 +3,7 @@ package com.example.stocks.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +15,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -67,6 +64,7 @@ public class StockDetailActivity extends AppCompatActivity {
     private TextView portfoliosSecondLine;
     private Button tradeButtonView;
     private TradeDialogBinding tradeDialogBinding;
+    private DecimalFormat decimalFormat;
 
     // stock stats section
     private TextView currentPriceView;
@@ -144,14 +142,12 @@ public class StockDetailActivity extends AppCompatActivity {
             queryTicker = intent.getStringExtra("ticker");
         }
 
+        queryTicker = queryTicker.toUpperCase();
         stockItem = new StockItem(queryTicker);
-        StockItem favoriteStock = PreferenceStorageManager.getStockItemByTicker(Constants.FAVORITE_KEY, queryTicker);
+        StockItem favoriteStock = PreferenceStorageManager.getStockItemByTickerFromStorage(Constants.FAVORITE_KEY, queryTicker);
         this.isInFavorite = favoriteStock != null;
 
         fetchStockOutlook();
-        fetchStockSummary();
-        fetchNewsData();
-        fetchHighChart();
     }
 
     private void fetchStockOutlook() {
@@ -164,6 +160,8 @@ public class StockDetailActivity extends AppCompatActivity {
                 nameView.setText(name);
                 descriptionView.setText(result.get("description"));
                 stockItem.stockName = name;
+
+                fetchStockSummary();
             }
 
             @Override
@@ -177,10 +175,8 @@ public class StockDetailActivity extends AppCompatActivity {
         DataService.getInstance().fetchStockSummary(queryTicker, new GsonCallBack<Map<String, String>>() {
             @Override
             public void onSuccess(Map<String, String> result) throws Exception {
-                double change = Double.parseDouble(String.valueOf(result.get("change")));
-
                 String defaultPrice = "0.0";
-                String changeText = "$" + String.valueOf(change);
+                String changePrice = result.get("change") == null ? defaultPrice : String.valueOf(result.get("change"));
                 String currentPrice = result.get("last") == null ? defaultPrice : String.valueOf(result.get("last"));
                 String lowPrice = result.get("low") == null ? defaultPrice : String.valueOf(result.get("low"));
                 String bidPrice = result.get("bidPrice") == null ? defaultPrice : String.valueOf(result.get("bidPrice"));
@@ -189,7 +185,10 @@ public class StockDetailActivity extends AppCompatActivity {
                 String highPrice = result.get("high") == null ? defaultPrice : String.valueOf(result.get("high"));
                 String volume = result.get("volume") == null ? defaultPrice : String.valueOf(result.get("volume"));
 
-                DecimalFormat decimalFormat = new DecimalFormat("####0.00");
+                double change = Double.parseDouble(changePrice);
+                String changeText = "$" + change;
+
+                decimalFormat = new DecimalFormat("####0.00");
                 decimalFormat.setGroupingUsed(true);
                 decimalFormat.setGroupingSize(3);
 
@@ -234,57 +233,18 @@ public class StockDetailActivity extends AppCompatActivity {
                 highPriceView.setText(highPrice);
                 volumeView.setText(formattedVolume);
 
-                String firstLineText;
-                String secondLineText;
-                StockItem portfolioStock = PreferenceStorageManager.getStockItemByTicker(Constants.PORTFOLIO_KEY, queryTicker);
-                if (portfolioStock != null) {
-                    firstLineText = "Shares owned: " + portfolioStock.stockShares + ".0";
-                    decimalFormat.setGroupingUsed(false);
-                    double marketValue = Double.parseDouble(portfolioStock.stockShares) * priceDouble;
-                    secondLineText = "Market Value: $" + decimalFormat.format(marketValue);
-                    stockItem.updateStockSharesAndInfo(portfolioStock.stockShares);
-                } else {
-                    firstLineText = "You have 0 shares of " + queryTicker + ".";
-                    secondLineText = "Start Trading!";
-                    stockItem.updateStockSharesAndInfo("0");
-                }
-                portfolioFirstLine.setText(firstLineText);
-                portfoliosSecondLine.setText(secondLineText);
+                StockItem portfolioStockItem = PreferenceStorageManager.getStockItemByTickerFromStorage(Constants.PORTFOLIO_KEY, queryTicker);
+                updatePortfolioText(portfolioStockItem, priceDouble);
 
                 // set dialog listeners
                 tradeButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        TradeViewModel model = new TradeViewModel(StockDetailActivity.this, String.valueOf(priceDouble));
-
-                        Dialog dialog = new Dialog(StockDetailActivity.this);
-                        tradeDialogBinding = TradeDialogBinding.inflate(LayoutInflater.from(StockDetailActivity.this));
-                        tradeDialogBinding.setViewModel(model);
-                        dialog.setContentView(tradeDialogBinding.getRoot());
-
-                        EditText textInput = dialog.findViewById(R.id.trade_input);
-                        TextView dialogHeader = dialog.findViewById(R.id.trade_dialog_header);
-                        TextView tradeMoneyInfo = dialog.findViewById(R.id.trade_money_available);
-
-                        String dialogHeaderText = "Trade " + stockItem.stockName + " shares";
-                        dialogHeader.setText(dialogHeaderText);
-
-                        textInput.setMovementMethod(null);
-                        textInput.setTextIsSelectable(true);
-
-                        String moneyLeft = "$" + PreferenceStorageManager.getUninventedCash();
-                        String moneyInfoText = moneyLeft + " available to buy " + queryTicker;
-                        tradeMoneyInfo.setText(moneyInfoText);
-
-                        dialog.show();
-                        Window window = dialog.getWindow();
-                        window.setLayout(1400, 1350);
+                        openTradeDialog(priceDouble);
                     }
                 });
 
-                progressView.setVisibility(View.GONE);
-                detailScrollView.setBackgroundColor(StockDetailActivity.this.getColor(R.color.white));
-                detailContentView.setVisibility(View.VISIBLE);
+                fetchNewsData();
             }
 
             @Override
@@ -351,6 +311,10 @@ public class StockDetailActivity extends AppCompatActivity {
                  }
 
                 initNewsRecyclerView();
+                progressView.setVisibility(View.GONE);
+                detailScrollView.setBackgroundColor(StockDetailActivity.this.getColor(R.color.white));
+                detailContentView.setVisibility(View.VISIBLE);
+                fetchHighChart();
             }
 
             @Override
@@ -423,13 +387,13 @@ public class StockDetailActivity extends AppCompatActivity {
         String prefix = "\"" + queryTicker + "\"";
         if (item.getItemId() == R.id.favorite_icon) {
             if (this.isInFavorite) {
-                PreferenceStorageManager.deleteStockItemFromSection(Constants.FAVORITE_KEY, stockItem);
+                PreferenceStorageManager.deleteStockItemFromFavorite(stockItem.stockTicker);
                 String suffix = " was removed from favorites";
-                Toast.makeText(StockDetailActivity.this, prefix + suffix, Toast.LENGTH_SHORT).show();
+                makeToast(prefix + suffix);
             } else {
                 String suffix = " was added to favorites";
-                PreferenceStorageManager.addStockItemToSection(Constants.FAVORITE_KEY, stockItem);
-                Toast.makeText(StockDetailActivity.this, prefix + suffix, Toast.LENGTH_SHORT).show();
+                PreferenceStorageManager.addStockItemToFavorite(stockItem);
+                makeToast(prefix + suffix);
             }
             this.isInFavorite = !this.isInFavorite;
             invalidateOptionsMenu();
@@ -437,5 +401,137 @@ public class StockDetailActivity extends AppCompatActivity {
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void openTradeDialog(double priceDouble) {
+        TradeViewModel model = new TradeViewModel(String.valueOf(priceDouble));
+
+        Dialog dialog = new Dialog(StockDetailActivity.this);
+        tradeDialogBinding = TradeDialogBinding.inflate(LayoutInflater.from(StockDetailActivity.this));
+        tradeDialogBinding.setViewModel(model);
+        dialog.setContentView(tradeDialogBinding.getRoot());
+
+        EditText textInput = dialog.findViewById(R.id.trade_input);
+        TextView dialogHeader = dialog.findViewById(R.id.trade_dialog_header);
+        TextView tradeMoneyInfo = dialog.findViewById(R.id.trade_money_available);
+        Button buyButton = dialog.findViewById(R.id.buy_button);
+        Button sellButton = dialog.findViewById(R.id.sell_button);
+
+        buyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    double sharesToBuy = Double.parseDouble(model.getTradeAmount());
+                    double cost = Double.parseDouble(model.getProduct());
+                    if (sharesToBuy <= 0) {
+                        makeToast(Constants.zeroOrNegativeBuy);
+                    } else {
+                        double cashLeft = Double.parseDouble(PreferenceStorageManager.getUninventedCash());
+                        if (cost > cashLeft) {
+                            makeToast(Constants.buyMoreToast);
+                        } else {
+                            stockItem.updateStockSharesAndInfo(String.valueOf(Double.parseDouble(stockItem.stockShares) + sharesToBuy));
+                            PreferenceStorageManager.addOrUpdatePortfolio(stockItem, String.valueOf(cost));
+                            updatePortfolioText(stockItem, priceDouble);
+                            dialog.dismiss();
+                            openTradeCompleteDialog(String.valueOf(sharesToBuy), true);
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    makeToast(Constants.invalidToast);
+                }
+
+            }
+        });
+
+        sellButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    double sharesToSell = Double.parseDouble(model.getTradeAmount());
+                    double revenue = Double.parseDouble(model.getProduct());
+                    if (sharesToSell <= 0) {
+                        makeToast(Constants.zeroOrNegativeSell);
+                    } else {
+                        double sharesBought = Double.parseDouble(stockItem.stockShares);
+                        if (sharesToSell > sharesBought) {
+                            makeToast(Constants.sellMoreToast);
+                        } else {
+                            double sharesLeft = Double.parseDouble(stockItem.stockShares) - sharesToSell;
+                            Log.e(TAG, "sell: " + sharesLeft);
+                            stockItem.updateStockSharesAndInfo(String.valueOf(sharesLeft));
+                            PreferenceStorageManager.deleteOrUpdatePortfolio(stockItem, String.valueOf(revenue));
+                            updatePortfolioText(stockItem, priceDouble);
+                            dialog.dismiss();
+                            openTradeCompleteDialog(String.valueOf(sharesToSell), false);
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    makeToast(Constants.invalidToast);
+                }
+
+            }
+        });
+
+        String dialogHeaderText = "Trade " + stockItem.stockName + " shares";
+        dialogHeader.setText(dialogHeaderText);
+
+        textInput.setMovementMethod(null);
+        textInput.setTextIsSelectable(true);
+
+        double roundOff = Math.round(Double.parseDouble(PreferenceStorageManager.getUninventedCash()) * 100.0) / 100.0;
+        String moneyLeft = "$" + roundOff;
+        String moneyInfoText = moneyLeft + " available to buy " + queryTicker;
+        tradeMoneyInfo.setText(moneyInfoText);
+
+        dialog.show();
+        Window window = dialog.getWindow();
+        window.setLayout(1400, 1300);
+    }
+
+    private void openTradeCompleteDialog(String shares, boolean isBuy) {
+        Dialog dialog = new Dialog(StockDetailActivity.this);
+        dialog.setContentView(R.layout.trade_complete_dialog);
+        TextView completeMessage = dialog.findViewById(R.id.trade_message);
+        Button doneButton = dialog.findViewById(R.id.done_button);
+
+        double sharesDouble = Double.parseDouble(shares);
+        String action = (isBuy ? "bought " : "sold ") + ((sharesDouble % 1) == 0 ? (int)sharesDouble : shares);
+        String message = "You have successfully " + action + " shares of " + queryTicker;
+        completeMessage.setText(message);
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+        Window window = dialog.getWindow();
+        window.setLayout(1450, 1100);
+    }
+
+    private void makeToast(String msg) {
+        Toast toast = Toast.makeText(StockDetailActivity.this, msg, Toast.LENGTH_SHORT);
+//        toast.getView().setBackgroundColor(StockDetailActivity.this.getColor(R.color.white));
+        toast.show();
+    }
+
+    private void updatePortfolioText(StockItem portfolioStock, double priceDouble) {
+        String firstLineText;
+        String secondLineText;
+        if (portfolioStock != null && Double.parseDouble(portfolioStock.stockShares) != 0) {
+            firstLineText = "Shares owned: " + portfolioStock.stockShares;
+            decimalFormat.setGroupingUsed(false);
+            double marketValue = Double.parseDouble(portfolioStock.stockShares) * priceDouble;
+            secondLineText = "Market Value: $" + decimalFormat.format(marketValue);
+            stockItem.updateStockSharesAndInfo(portfolioStock.stockShares);
+        } else {
+            firstLineText = "You have 0 shares of " + queryTicker + ".";
+            secondLineText = "Start Trading!";
+            stockItem.updateStockSharesAndInfo("0");
+        }
+        portfolioFirstLine.setText(firstLineText);
+        portfoliosSecondLine.setText(secondLineText);
     }
 }

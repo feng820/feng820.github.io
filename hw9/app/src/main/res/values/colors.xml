@@ -9,5 +9,5 @@
     <color name="white">@android:color/white</color>
     <color name="grey">#666666</color>
     <color name="dialog_grey">#8c8c8c</color>
-    <color name="dialog_green">#009933</color>
+    <color name="dialog_green">#00994d</color>
 </resources>

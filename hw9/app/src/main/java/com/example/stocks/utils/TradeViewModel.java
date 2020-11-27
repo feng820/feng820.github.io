@@ -9,14 +9,12 @@ import androidx.databinding.Bindable;
 import com.example.stocks.BR;
 
 public class TradeViewModel extends BaseObservable {
-    private Context context;
     private String tradeAmount;
     private String currentPrice;
     private String product;
     private static final String TAG = "TradeViewModel";
 
-    public TradeViewModel(Context context, String currentPrice) {
-        this.context = context;
+    public TradeViewModel(String currentPrice) {
         this.currentPrice = currentPrice;
         this.product = "0.00";
         this.tradeAmount = "";
@@ -44,8 +42,7 @@ public class TradeViewModel extends BaseObservable {
                 try {
                     double amount = Double.parseDouble(value);
                     double price = Double.parseDouble(currentPrice);
-                    double roundOff = Math.round(amount * price * 100.0) / 100.0;
-                    product = String.valueOf(roundOff);
+                    product = String.valueOf(amount * price);
                 } catch (NumberFormatException e) {
                     Log.e(TAG, "setTradeAmount: Invalid input");
                 }

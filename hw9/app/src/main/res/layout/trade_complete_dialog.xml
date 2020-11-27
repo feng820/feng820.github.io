@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/StockDetailTheme">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="400dp"
+        android:layout_height="300dp"
+        android:layout_centerInParent="true"
+        android:background="@color/dialog_green">
+
+
+        <TextView
+            android:id="@+id/congrats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:background="@color/dialog_green"
+            android:text="Congratulations!"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/trade_message"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:background="@color/dialog_green"
+            android:gravity="center"
+            android:text="You have successfully bought 1 shares of MSFT"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/congrats" />
+
+        <Button
+            android:id="@+id/done_button"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:background="@drawable/round_btn_white"
+            android:text="Done"
+            android:textColor="@color/green"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/trade_message" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

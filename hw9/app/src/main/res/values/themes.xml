@@ -27,4 +27,5 @@
         <item name="colorControlActivated">@color/primary_color</item>
         <item name="colorControlHighlight">#b3b3b3</item>
     </style>
+
 </resources>

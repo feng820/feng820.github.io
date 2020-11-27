@@ -74,7 +74,9 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+//        PreferenceStorageManager.clearAll();
+//        PreferenceStorageManager.updateCashLeft("20000.00");
+//        Log.e(TAG, "onViewCreated: " + PreferenceStorageManager.getStockItemByTickerFromStorage(Constants.PORTFOLIO_KEY, "GOOGL").stockShares );
         sectionedAdapter = new StockSectionedRecyclerViewAdapter();
         recyclerView = homeRootView.findViewById(R.id.recyclerview);
         homeContentView = homeRootView.findViewById(R.id.home_content);
@@ -178,15 +180,20 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
     private void updateSectionList(String key, List<StockItem> sectionList, Map<String, Map<String, String>> latestMap) {
         for (StockItem item : sectionList) {
             Map<String, String> obj = latestMap.get(item.stockTicker);
-            double change = Double.parseDouble(String.valueOf(obj.get("change")));
+            String defaultPrice = "0.0";
 
-            item.stockPrice = String.valueOf(obj.get("price"));
-            item.stockPriceChange = String.valueOf(Math.abs(change));
+            String change = obj.get("change") == null ? defaultPrice : String.valueOf(obj.get("change"));
+            String price = obj.get("price") == null ? defaultPrice : String.valueOf(obj.get("price"));
 
-            if (change > 0) {
+            double changeDouble = Double.parseDouble(change);
+
+            item.stockPrice = price;
+            item.stockPriceChange = String.valueOf(Math.abs(changeDouble));
+
+            if (changeDouble > 0) {
                 item.stockChangeColor = getContext().getColor(R.color.green);
                 item.stockPriceChangeIcon = R.drawable.ic_twotone_trending_up_24;
-            } else if (change < 0) {
+            } else if (changeDouble < 0) {
                 item.stockChangeColor = getContext().getColor(R.color.red);
                 item.stockPriceChangeIcon = R.drawable.ic_baseline_trending_down_24;
             } else {
@@ -249,7 +256,8 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
 
     @Override
     public void onResume() {
-        if (favoriteSection != null) {
+        if (portfolioSection != null && favoriteSection != null) {
+            portfolioSection.updateStockList(Constants.PORTFOLIO_KEY);
             favoriteSection.updateStockList(Constants.FAVORITE_KEY);
             sectionedAdapter.notifyDataSetChanged();
         }

@@ -1,5 +1,6 @@
 package com.example.stocks.viewholder;
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.ColorInt;
@@ -62,7 +63,8 @@ public class HomeSection extends Section {
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
         if (sectionKey.equals(Constants.PORTFOLIO_KEY)) {
             final PortfolioHeaderViewHolder headerHolder = (PortfolioHeaderViewHolder) holder;
-            headerHolder.netWorth.setText(PreferenceStorageManager.getUninventedCash());
+            double roundOff = Math.round(Double.parseDouble(PreferenceStorageManager.getNetWorth()) * 100.0) / 100.0;
+            headerHolder.netWorth.setText(String.valueOf(roundOff));
         }
     }
 
@@ -128,7 +130,7 @@ public class HomeSection extends Section {
     }
 
     public void deleteStockItemByIndex(int position) {
-        stockList = PreferenceStorageManager.deleteStockItemFromSection(sectionKey, stockList.get(position));
+        stockList = PreferenceStorageManager.deleteStockItemFromFavorite(stockList.get(position).stockTicker);
     }
 
     public void updateStockItem(final int index, final String stockName, final String stockPrice,

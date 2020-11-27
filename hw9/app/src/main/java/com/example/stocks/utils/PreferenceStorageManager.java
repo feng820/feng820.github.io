@@ -29,35 +29,112 @@ public class PreferenceStorageManager {
 
     public static void clearAll() {
         List<StockItem> portfolioList = getSectionStockList(Constants.PORTFOLIO_KEY);
-        List<StockItem> favorites = getSectionStockList(Constants.FAVORITE_KEY);
         portfolioList.clear();
-        favorites.clear();
         updateStorage(Constants.PORTFOLIO_KEY, portfolioList);
+
+        List<StockItem> favorites = getSectionStockList(Constants.FAVORITE_KEY);
+        favorites.clear();
         updateStorage(Constants.FAVORITE_KEY, favorites);
     }
 
-    public static void addStockItemToSection(String key, StockItem stockItem) {
-        List<StockItem> sectionStockList = getSectionStockList(key);
-        sectionStockList.add(stockItem);
-        updateStorage(key, sectionStockList);
-    }
-
-    public static List<StockItem> deleteStockItemFromSection(String key, StockItem stockItem) {
-        List<StockItem> sectionStockList = getSectionStockList(key);
+    public static void addOrUpdatePortfolio(StockItem stockItem, String cost) {
+        List<StockItem> portfolioList = getSectionStockList(Constants.PORTFOLIO_KEY);
         if (stockItem == null) {
-            Log.e(TAG, "Empty stock item provided");
-            return sectionStockList;
+            Log.e(TAG, "Invalid stock to add to the portfolio section");
+            return;
         }
-        if(!sectionStockList.remove(stockItem)) {
-            Log.e(TAG, "deleteStockItemFromSection: This stock item is not in the storage");
+
+        StockItem oldStockItem = getStockItemByTickerFromList(portfolioList, stockItem.stockTicker);
+        if (oldStockItem != null) {
+            oldStockItem.updateStockSharesAndInfo(stockItem.stockShares);
         } else {
-            updateStorage(key, sectionStockList);
+            portfolioList.add(stockItem);
         }
-        return sectionStockList;
+        updateCashLeft(String.valueOf(Double.parseDouble(getUninventedCash()) - Double.parseDouble(cost)));
+        updateStorage(Constants.PORTFOLIO_KEY, portfolioList);
+
+        List<StockItem> favoriteList = getSectionStockList(Constants.FAVORITE_KEY);
+        StockItem itemToAddInFavorite = getStockItemByTickerFromList(favoriteList, stockItem.stockTicker);
+        if (itemToAddInFavorite != null) {
+            itemToAddInFavorite.updateStockSharesAndInfo(stockItem.stockShares);
+            updateStorage(Constants.FAVORITE_KEY, favoriteList);
+        }
     }
 
-    public static StockItem getStockItemByTicker(String key, String ticker) {
+    public static void deleteOrUpdatePortfolio(StockItem stockItem, String revenue) {
+        List<StockItem> portfolioList = getSectionStockList(Constants.PORTFOLIO_KEY);
+        if (stockItem == null) {
+            Log.e(TAG, "Invalid Stock ticker to delete from portfolio section");
+            return;
+        }
+
+        StockItem oldStockItem = getStockItemByTickerFromList(portfolioList, stockItem.stockTicker);
+        if (oldStockItem == null) {
+            Log.e(TAG, "Stock item is not in the portfolio section");
+            return;
+        }
+
+        if (Double.parseDouble(stockItem.stockShares) == 0) {
+            portfolioList.remove(oldStockItem);
+        } else {
+            oldStockItem.updateStockSharesAndInfo(stockItem.stockShares);
+        }
+        updateCashLeft(String.valueOf(Double.parseDouble(getUninventedCash()) + Double.parseDouble(revenue)));
+        updateStorage(Constants.PORTFOLIO_KEY, portfolioList);
+
+        List<StockItem> favoriteList = getSectionStockList(Constants.FAVORITE_KEY);
+        StockItem itemToDeleteInFavorite = getStockItemByTickerFromList(favoriteList, stockItem.stockTicker);
+        if (itemToDeleteInFavorite != null) {
+            itemToDeleteInFavorite.updateStockSharesAndInfo(String.valueOf(stockItem.stockShares));
+            updateStorage(Constants.FAVORITE_KEY, favoriteList);
+        }
+    }
+
+    public static void addStockItemToFavorite(StockItem stockItem) {
+        List<StockItem> favoriteList = getSectionStockList(Constants.FAVORITE_KEY);
+        if (stockItem == null) {
+            Log.e(TAG, "Invalid stock to add to the favorite section");
+            return;
+        }
+
+        if (favoriteList.contains(stockItem)) {
+            Log.e(TAG, "Stock is already in the favorite section");
+            return;
+        }
+
+        favoriteList.add(stockItem);
+        updateStorage(Constants.FAVORITE_KEY, favoriteList);
+    }
+
+    public static List<StockItem> deleteStockItemFromFavorite(String stockTicker) {
+        List<StockItem> favoriteList = getSectionStockList(Constants.FAVORITE_KEY);
+        if (stockTicker == null) {
+            Log.e(TAG, "Invalid Stock ticker to delete from favorite section");
+            return favoriteList;
+        }
+
+        StockItem itemToDelete = getStockItemByTickerFromList(favoriteList, stockTicker);
+        if (itemToDelete == null) {
+            Log.e(TAG, "Stock item is not in the favorite section");
+            return favoriteList;
+        }
+
+        favoriteList.remove(itemToDelete);
+        updateStorage(Constants.FAVORITE_KEY, favoriteList);
+        return favoriteList;
+    }
+
+    public static StockItem getStockItemByTickerFromStorage(String key, String ticker) {
         List<StockItem> sectionStockList = getSectionStockList(key);
+        for (StockItem item : sectionStockList) {
+            if (item.stockTicker.equals(ticker)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public static StockItem getStockItemByTickerFromList(List<StockItem> sectionStockList, String ticker) {
         for (StockItem item : sectionStockList) {
             if (item.stockTicker.equals(ticker)) {
                 return item;
@@ -91,5 +168,15 @@ public class PreferenceStorageManager {
             updateCashLeft(DEFAULT_CASH);
         }
         return cash == null ? DEFAULT_CASH : cash;
+    }
+
+    public static String getNetWorth() {
+        List<StockItem> portfolioList = getSectionStockList(Constants.PORTFOLIO_KEY);
+        double stockValue = 0;
+        for (StockItem item : portfolioList) {
+            stockValue += Double.parseDouble(item.stockShares) * Double.parseDouble(item.stockPrice);
+        }
+
+        return String.valueOf(Double.parseDouble(getUninventedCash()) + stockValue);
     }
 }
