@@ -78,7 +78,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             });
 
             ((NewsItemViewHolder) holder).newsCard.setOnLongClickListener(v -> {
-                final Dialog dialog = new Dialog(ctx);
+                Dialog dialog = new Dialog(ctx);
                 dialog.setContentView(R.layout.article_dialog);
 
                 ImageView dialogImage = dialog.findViewById(R.id.dialog_image);

@@ -8,4 +8,5 @@
     <string name="home_footer">Powered by tiingo</string>
     <string name="progress_text">Fetching Data</string>
     <string name="favorite_icon">Favorite</string>
+    <string name="trade_hint">0</string>
 </resources>

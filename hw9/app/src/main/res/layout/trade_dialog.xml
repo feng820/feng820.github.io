@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.stocks.utils.TradeViewModel" />
+    </data>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:theme="@style/StockDetailTheme">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="350dp"
+            android:layout_height="350dp"
+            android:layout_centerInParent="true">
+
+            <TextView
+                android:id="@+id/trade_dialog_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:textSize="20sp"
+                android:text="Trade Microsoft Corporation shares"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/trade_input"
+                android:layout_width="265dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="44dp"
+                android:inputType="numberDecimal"
+                android:digits="0123456789."
+                android:textColor="@color/dialog_grey"
+                android:textSize="40sp"
+                android:theme="@style/TradeInputTheme"
+                android:textCursorDrawable="@drawable/cursor"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/trade_dialog_header"
+                android:hint="@string/trade_hint"
+                android:text="@={viewModel.tradeAmount}"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="90dp"
+                android:text="shares"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/trade_input"
+                app:layout_constraintTop_toBottomOf="@+id/trade_dialog_header" />
+
+            <TextView
+                android:id="@+id/trade_formula"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:text="@{(viewModel.tradeAmount.isEmpty() ? `0` : viewModel.tradeAmount) + ` x $` + viewModel.currentPrice + `/share = $` + viewModel.product}"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/trade_input" />
+
+            <TextView
+                android:id="@+id/trade_money_available"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                android:text="$8908.10 available to buy MSFT"
+                android:textColor="@color/dialog_grey"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/trade_formula" />
+
+            <Button
+                android:id="@+id/buy_button"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="120dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="36dp"
+                android:background="@drawable/round_btn_dialog"
+                android:text="BUY"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/trade_money_available"
+                app:layout_constraintVertical_bias="0.254" />
+
+
+            <Button
+                android:id="@+id/sell_button"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="120dp"
+                android:layout_height="45dp"
+                android:layout_marginEnd="36dp"
+                android:background="@drawable/round_btn_dialog"
+                android:text="SELL"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/trade_money_available"
+                app:layout_constraintVertical_bias="0.254" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
+</layout>

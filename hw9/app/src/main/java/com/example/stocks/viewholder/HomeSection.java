@@ -59,6 +59,14 @@ public class HomeSection extends Section {
     }
 
     @Override
+    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
+        if (sectionKey.equals(Constants.PORTFOLIO_KEY)) {
+            final PortfolioHeaderViewHolder headerHolder = (PortfolioHeaderViewHolder) holder;
+            headerHolder.netWorth.setText(PreferenceStorageManager.getUninventedCash());
+        }
+    }
+
+    @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, List<Object> payloads) {
         if (sectionKey.equals(Constants.PORTFOLIO_KEY)) {
             final PortfolioHeaderViewHolder headerHolder = (PortfolioHeaderViewHolder) holder;

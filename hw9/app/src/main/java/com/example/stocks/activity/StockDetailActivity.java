@@ -3,34 +3,44 @@ package com.example.stocks.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.webkit.WebView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.stocks.R;
 import com.example.stocks.adapter.NewsRecyclerViewAdapter;
+import com.example.stocks.databinding.TradeDialogBinding;
 import com.example.stocks.network.DataService;
 import com.example.stocks.network.GsonCallBack;
 import com.example.stocks.utils.Constants;
 import com.example.stocks.utils.NewsItem;
 import com.example.stocks.utils.PreferenceStorageManager;
 import com.example.stocks.utils.StockItem;
+import com.example.stocks.utils.TradeViewModel;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -55,6 +65,8 @@ public class StockDetailActivity extends AppCompatActivity {
     // stock portfolio section
     private TextView portfolioFirstLine;
     private TextView portfoliosSecondLine;
+    private Button tradeButtonView;
+    private TradeDialogBinding tradeDialogBinding;
 
     // stock stats section
     private TextView currentPriceView;
@@ -97,6 +109,7 @@ public class StockDetailActivity extends AppCompatActivity {
 
         portfolioFirstLine = findViewById(R.id.portfolio_first_line);
         portfoliosSecondLine = findViewById(R.id.portfolio_second_line);
+        tradeButtonView = findViewById(R.id.trade_button);
 
         currentPriceView = findViewById(R.id.current_price);
         lowPriceView = findViewById(R.id.low_price);
@@ -237,6 +250,37 @@ public class StockDetailActivity extends AppCompatActivity {
                 }
                 portfolioFirstLine.setText(firstLineText);
                 portfoliosSecondLine.setText(secondLineText);
+
+                // set dialog listeners
+                tradeButtonView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        TradeViewModel model = new TradeViewModel(StockDetailActivity.this, String.valueOf(priceDouble));
+
+                        Dialog dialog = new Dialog(StockDetailActivity.this);
+                        tradeDialogBinding = TradeDialogBinding.inflate(LayoutInflater.from(StockDetailActivity.this));
+                        tradeDialogBinding.setViewModel(model);
+                        dialog.setContentView(tradeDialogBinding.getRoot());
+
+                        EditText textInput = dialog.findViewById(R.id.trade_input);
+                        TextView dialogHeader = dialog.findViewById(R.id.trade_dialog_header);
+                        TextView tradeMoneyInfo = dialog.findViewById(R.id.trade_money_available);
+
+                        String dialogHeaderText = "Trade " + stockItem.stockName + " shares";
+                        dialogHeader.setText(dialogHeaderText);
+
+                        textInput.setMovementMethod(null);
+                        textInput.setTextIsSelectable(true);
+
+                        String moneyLeft = "$" + PreferenceStorageManager.getUninventedCash();
+                        String moneyInfoText = moneyLeft + " available to buy " + queryTicker;
+                        tradeMoneyInfo.setText(moneyInfoText);
+
+                        dialog.show();
+                        Window window = dialog.getWindow();
+                        window.setLayout(1400, 1350);
+                    }
+                });
 
                 progressView.setVisibility(View.GONE);
                 detailScrollView.setBackgroundColor(StockDetailActivity.this.getColor(R.color.white));

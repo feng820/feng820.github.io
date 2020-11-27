@@ -14,6 +14,7 @@ public class PreferenceStorageManager {
 
     private static final String STORAGE_KEY = "stock";
     private static final String TAG = "PreferenceStorageManage";
+    private static final String DEFAULT_CASH = "20000.00";
 
     private static SharedPreferences sharedPreferences;
 
@@ -75,5 +76,20 @@ public class PreferenceStorageManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key, new Gson().toJson(sectionStockList));
         editor.apply();
+    }
+
+    public static void updateCashLeft(String cashLeft) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constants.CASH_LEFT, new Gson().toJson(cashLeft));
+        editor.apply();
+    }
+
+    public static String getUninventedCash() {
+        String jsonList = sharedPreferences.getString(Constants.CASH_LEFT, null);
+        String cash = new Gson().fromJson(jsonList, new TypeToken<String>(){}.getType());
+        if (cash == null) {
+            updateCashLeft(DEFAULT_CASH);
+        }
+        return cash == null ? DEFAULT_CASH : cash;
     }
 }
