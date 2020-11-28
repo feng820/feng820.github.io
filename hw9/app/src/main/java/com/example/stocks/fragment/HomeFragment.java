@@ -116,13 +116,12 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL) {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
-//                int position = parent.getChildAdapterPosition(view);
-//                if (position == state.getItemCount() - 1) {
-//                    outRect.setEmpty();
-//                } else {
-//                    super.getItemOffsets(outRect, view, parent, state);
-//                }
+                int position = parent.getChildAdapterPosition(view);
+                if (position == state.getItemCount() - 1) {
+                    outRect.setEmpty();
+                } else {
+                    super.getItemOffsets(outRect, view, parent, state);
+                }
             }
         });
 
@@ -307,6 +306,9 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
                     SectionAdapter sectionAdapter = sectionedAdapter.getAdapterForSection(favoriteSection);
                     favoriteSection.deleteStockItemByIndex(position);
                     sectionAdapter.notifyItemRemoved(position);
+                    if (position != 0) {
+                        sectionAdapter.notifyItemChanged(position - 1, Boolean.FALSE);
+                    }
                     sectionAdapter.notifyItemRangeChanged(position, favoriteSection.getContentItemsTotal() - position);
                 }
             }

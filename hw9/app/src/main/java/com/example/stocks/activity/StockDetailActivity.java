@@ -175,6 +175,11 @@ public class StockDetailActivity extends AppCompatActivity {
                 nameView.setText(name);
                 descriptionView.setText(result.get("description"));
                 stockItem.stockName = name;
+
+                if (stockItem.stockInfo == null) {
+                    Log.e(TAG, "onSuccess: error");
+                    stockItem.stockInfo = name;
+                }
                 incrementOrRender();
             }
 
