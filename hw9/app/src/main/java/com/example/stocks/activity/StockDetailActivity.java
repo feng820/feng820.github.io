@@ -46,6 +46,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class StockDetailActivity extends AppCompatActivity {
     private View detailContentView;
@@ -86,6 +87,7 @@ public class StockDetailActivity extends AppCompatActivity {
     private StockItem stockItem;
     private String queryTicker;
     private boolean isInFavorite;
+    private static final AtomicInteger apiSuccessfulCallbacks = new AtomicInteger(0);
 
     private static final String TAG = "StockDetailActivity";
     private static final String HIGHCHART_URL = "file:///android_asset/highcharts.html";
@@ -148,6 +150,19 @@ public class StockDetailActivity extends AppCompatActivity {
         this.isInFavorite = favoriteStock != null;
 
         fetchStockOutlook();
+        fetchStockSummary();
+        fetchNewsData();
+    }
+
+    private void incrementOrRender() {
+        int count = apiSuccessfulCallbacks.addAndGet(1);
+        if (count == 3) {
+            fetchHighChart();
+            progressView.setVisibility(View.GONE);
+            detailScrollView.setBackgroundColor(StockDetailActivity.this.getColor(R.color.white));
+            detailContentView.setVisibility(View.VISIBLE);
+            apiSuccessfulCallbacks.set(0);
+        }
     }
 
     private void fetchStockOutlook() {
@@ -160,8 +175,7 @@ public class StockDetailActivity extends AppCompatActivity {
                 nameView.setText(name);
                 descriptionView.setText(result.get("description"));
                 stockItem.stockName = name;
-
-                fetchStockSummary();
+                incrementOrRender();
             }
 
             @Override
@@ -243,8 +257,7 @@ public class StockDetailActivity extends AppCompatActivity {
                         openTradeDialog(priceDouble);
                     }
                 });
-
-                fetchNewsData();
+                incrementOrRender();
             }
 
             @Override
@@ -311,10 +324,7 @@ public class StockDetailActivity extends AppCompatActivity {
                  }
 
                 initNewsRecyclerView();
-                progressView.setVisibility(View.GONE);
-                detailScrollView.setBackgroundColor(StockDetailActivity.this.getColor(R.color.white));
-                detailContentView.setVisibility(View.VISIBLE);
-                fetchHighChart();
+                incrementOrRender();
             }
 
             @Override
