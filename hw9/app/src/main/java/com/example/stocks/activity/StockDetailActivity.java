@@ -496,7 +496,7 @@ public class StockDetailActivity extends AppCompatActivity {
 
         dialog.show();
         Window window = dialog.getWindow();
-        window.setLayout(1400, 1300);
+        window.setLayout(1400, 1350);
     }
 
     private void openTradeCompleteDialog(String shares, boolean isBuy) {
