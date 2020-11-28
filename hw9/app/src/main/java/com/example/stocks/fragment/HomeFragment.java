@@ -328,7 +328,14 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
             portfolioSection.updateStockList(Constants.PORTFOLIO_KEY);
             favoriteSection.updateStockList(Constants.FAVORITE_KEY);
             sectionedAdapter.notifyDataSetChanged();
+            handler.post(stockPriceUpdateRunnable);
         }
         super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        handler.removeCallbacks(stockPriceUpdateRunnable);
+        super.onPause();
     }
 }
