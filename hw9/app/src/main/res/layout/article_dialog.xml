@@ -8,13 +8,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="300dp"
-        android:layout_height="320dp"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
         <ImageView
             android:id="@+id/dialog_image"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="185dp"
+            android:src="@drawable/no_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -25,8 +26,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_marginTop="5dp"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:text="Amazon Web Services repotrs $11.6 billion third-quarter revenue, up to 29% year over year"
             android:ellipsize="end"
@@ -34,49 +36,36 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dialog_image"/>
 
-        <View
-            android:id="@+id/line1"
+        <LinearLayout
+            android:id="@+id/twitter_wrapper"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/primary_color"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dialog_text" />
-
-        <ImageView
-            android:id="@+id/twitter_button"
-            android:layout_width="150dp"
-            android:layout_height="48dp"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:src="@drawable/ic_twitter_logo_dialog"
-            android:clickable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/button_border"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/line1" />
+            app:layout_constraintTop_toBottomOf="@id/dialog_text">
 
-        <View
-            android:id="@+id/line2"
-            android:layout_width="1dp"
-            android:layout_height="wrap_content"
-            android:background="@color/primary_color"
-            app:layout_constraintTop_toBottomOf="@+id/line1"
-            app:layout_constraintStart_toEndOf="@+id/twitter_button"
-            app:layout_constraintEnd_toStartOf="@+id/chrome_button"/>
+            <ImageView
+                android:id="@+id/twitter_button"
+                android:padding="5dp"
+                android:layout_width="147dp"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:src="@drawable/ic_twitter_logo_dialog" />
 
-        <ImageView
-            android:id="@+id/chrome_button"
-            android:layout_width="150dp"
-            android:layout_height="48dp"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:clickable="true"
-            android:src="@drawable/ic_chrome"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/line2"
-            app:layout_constraintTop_toBottomOf="@+id/line1" />
+            <View
+                android:layout_width="1dp"
+                android:layout_height="60dp"
+                android:background="@color/primary_color"
+                />
 
-
+            <ImageView
+                android:id="@+id/chrome_button"
+                android:layout_width="147dp"
+                android:padding="5dp"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:src="@drawable/ic_chrome" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>
