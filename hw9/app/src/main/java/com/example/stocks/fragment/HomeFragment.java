@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.stocks.R;
-import com.example.stocks.activity.MainActivity;
 import com.example.stocks.activity.StockDetailActivity;
 import com.example.stocks.adapter.StockSectionedRecyclerViewAdapter;
 import com.example.stocks.network.DataService;
@@ -41,6 +40,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionAdapter;
 
@@ -61,6 +61,13 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
     private TextView homeFooterView;
     private TextView dateView;
 
+    private final Runnable stockPriceUpdateRunnable = new Runnable() {
+        @Override
+        public void run() {
+            refreshLatestData();
+            handler.postDelayed(stockPriceUpdateRunnable, TimeUnit.SECONDS.toMillis(15));
+        }
+    };
 
     @Nullable
     @Override
@@ -124,6 +131,66 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
         fetchLatestData();
     }
 
+    private void refreshLatestData() {
+        Log.i(TAG, "refreshLatestData: Refreshing the data!");
+        List<StockItem> portfolioList = PreferenceStorageManager.getSectionStockList(Constants.PORTFOLIO_KEY);
+        List<StockItem> favoriteList = PreferenceStorageManager.getSectionStockList(Constants.FAVORITE_KEY);
+
+        Set<StockItem> allUniqueStockItems = new HashSet<>();
+        allUniqueStockItems.addAll(portfolioList);
+        allUniqueStockItems.addAll(favoriteList);
+
+        List<String> tickers = new ArrayList<>();
+        for (StockItem item : allUniqueStockItems) {
+            tickers.add(item.stockTicker);
+        }
+
+        if (tickers.size() == 0) {
+            return;
+        }
+
+        DataService.getInstance().fetchLatestHomeData(tickers, new GsonCallBack<List<Map<String, String>>>() {
+            @Override
+            public void onSuccess(List<Map<String, String>> result) throws Exception {
+                Map<String, Map<String, String>> latestMap = new HashMap<>();
+                for (Map<String, String> entry : result) {
+                    latestMap.put(entry.get("ticker"), entry);
+                }
+
+                updateSectionList(Constants.PORTFOLIO_KEY, portfolioList, latestMap);
+                updateSectionList(Constants.FAVORITE_KEY, favoriteList, latestMap);
+
+                double latestStockRevenue = 0;
+                for (int i = 0; i < portfolioList.size(); i++) {
+                    StockItem item = portfolioList.get(i);
+                    portfolioSection.updateStockItem(i, item.stockPrice, item.stockPriceChange,
+                            item.stockChangeColor, item.stockPriceChangeIcon);
+                    latestStockRevenue += Double.parseDouble(item.stockPrice) * Double.parseDouble(item.stockShares);
+                }
+
+                for (int i = 0; i < favoriteList.size(); i++) {
+                    StockItem item = favoriteList.get(i);
+                    favoriteSection.updateStockItem(i, item.stockPrice, item.stockPriceChange,
+                            item.stockChangeColor, item.stockPriceChangeIcon);
+                }
+
+                SectionAdapter portfolioSectionAdapter = sectionedAdapter.getAdapterForSection(portfolioSection);
+                SectionAdapter favoriteSectionAdapter = sectionedAdapter.getAdapterForSection(favoriteSection);
+
+                portfolioSectionAdapter.notifyAllItemsChanged(new HomeSection.stockItemPriceUpdate());
+                double latestNetWorth = latestStockRevenue + Double.parseDouble(PreferenceStorageManager.getUninventedCash());
+                double roundOffNetWorth = Math.round(latestNetWorth * 100.0) / 100.0;
+                portfolioSectionAdapter.notifyHeaderChanged(String.valueOf(roundOffNetWorth));
+                favoriteSectionAdapter.notifyAllItemsChanged(new HomeSection.stockItemPriceUpdate());
+            }
+
+            @Override
+            public void onError(String result) throws Exception {
+                Log.e(TAG, "onError: Cannot Re-fetch Latest Data due to " + result);
+            }
+        });
+    }
+
     private void fetchLatestData() {
         List<StockItem> portfolioList = PreferenceStorageManager.getSectionStockList(Constants.PORTFOLIO_KEY);
         List<StockItem> favoriteList = PreferenceStorageManager.getSectionStockList(Constants.FAVORITE_KEY);
@@ -168,6 +235,7 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
 
                 homeProgressView.setVisibility(View.GONE);
                 homeContentView.setVisibility(View.VISIBLE);
+                handler.post(stockPriceUpdateRunnable);
             }
 
             @Override
@@ -180,8 +248,8 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
     private void updateSectionList(String key, List<StockItem> sectionList, Map<String, Map<String, String>> latestMap) {
         for (StockItem item : sectionList) {
             Map<String, String> obj = latestMap.get(item.stockTicker);
-            String defaultPrice = "0.0";
 
+            String defaultPrice = "0.0";
             String change = obj.get("change") == null ? defaultPrice : String.valueOf(obj.get("change"));
             String price = obj.get("price") == null ? defaultPrice : String.valueOf(obj.get("price"));
 
@@ -201,7 +269,7 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
             }
         }
 
-        PreferenceStorageManager.updateStorage(key, sectionList);
+        PreferenceStorageManager.updateSectionStockList(key, sectionList);
     }
 
     private void enableSwipeAndDragDrop() {

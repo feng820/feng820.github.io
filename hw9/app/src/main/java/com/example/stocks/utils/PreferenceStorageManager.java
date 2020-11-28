@@ -30,11 +30,11 @@ public class PreferenceStorageManager {
     public static void clearAll() {
         List<StockItem> portfolioList = getSectionStockList(Constants.PORTFOLIO_KEY);
         portfolioList.clear();
-        updateStorage(Constants.PORTFOLIO_KEY, portfolioList);
+        updateSectionStockList(Constants.PORTFOLIO_KEY, portfolioList);
 
         List<StockItem> favorites = getSectionStockList(Constants.FAVORITE_KEY);
         favorites.clear();
-        updateStorage(Constants.FAVORITE_KEY, favorites);
+        updateSectionStockList(Constants.FAVORITE_KEY, favorites);
     }
 
     public static void addOrUpdatePortfolio(StockItem stockItem, String cost) {
@@ -51,13 +51,13 @@ public class PreferenceStorageManager {
             portfolioList.add(stockItem);
         }
         updateCashLeft(String.valueOf(Double.parseDouble(getUninventedCash()) - Double.parseDouble(cost)));
-        updateStorage(Constants.PORTFOLIO_KEY, portfolioList);
+        updateSectionStockList(Constants.PORTFOLIO_KEY, portfolioList);
 
         List<StockItem> favoriteList = getSectionStockList(Constants.FAVORITE_KEY);
         StockItem itemToAddInFavorite = getStockItemByTickerFromList(favoriteList, stockItem.stockTicker);
         if (itemToAddInFavorite != null) {
             itemToAddInFavorite.updateStockSharesAndInfo(stockItem.stockShares);
-            updateStorage(Constants.FAVORITE_KEY, favoriteList);
+            updateSectionStockList(Constants.FAVORITE_KEY, favoriteList);
         }
     }
 
@@ -80,13 +80,13 @@ public class PreferenceStorageManager {
             oldStockItem.updateStockSharesAndInfo(stockItem.stockShares);
         }
         updateCashLeft(String.valueOf(Double.parseDouble(getUninventedCash()) + Double.parseDouble(revenue)));
-        updateStorage(Constants.PORTFOLIO_KEY, portfolioList);
+        updateSectionStockList(Constants.PORTFOLIO_KEY, portfolioList);
 
         List<StockItem> favoriteList = getSectionStockList(Constants.FAVORITE_KEY);
         StockItem itemToDeleteInFavorite = getStockItemByTickerFromList(favoriteList, stockItem.stockTicker);
         if (itemToDeleteInFavorite != null) {
             itemToDeleteInFavorite.updateStockSharesAndInfo(String.valueOf(stockItem.stockShares));
-            updateStorage(Constants.FAVORITE_KEY, favoriteList);
+            updateSectionStockList(Constants.FAVORITE_KEY, favoriteList);
         }
     }
 
@@ -103,7 +103,7 @@ public class PreferenceStorageManager {
         }
 
         favoriteList.add(stockItem);
-        updateStorage(Constants.FAVORITE_KEY, favoriteList);
+        updateSectionStockList(Constants.FAVORITE_KEY, favoriteList);
     }
 
     public static List<StockItem> deleteStockItemFromFavorite(String stockTicker) {
@@ -120,7 +120,7 @@ public class PreferenceStorageManager {
         }
 
         favoriteList.remove(itemToDelete);
-        updateStorage(Constants.FAVORITE_KEY, favoriteList);
+        updateSectionStockList(Constants.FAVORITE_KEY, favoriteList);
         return favoriteList;
     }
 
@@ -149,7 +149,7 @@ public class PreferenceStorageManager {
         return stockSectionList == null ? new ArrayList<>() : stockSectionList;
     }
 
-    public static void updateStorage(String key, List<StockItem> sectionStockList) {
+    public static void updateSectionStockList(String key, List<StockItem> sectionStockList) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key, new Gson().toJson(sectionStockList));
         editor.apply();

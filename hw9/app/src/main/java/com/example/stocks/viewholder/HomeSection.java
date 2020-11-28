@@ -126,24 +126,22 @@ public class HomeSection extends Section {
                 Collections.swap(stockList, i, i - 1);
             }
         }
-        PreferenceStorageManager.updateStorage(sectionKey, stockList);
+        PreferenceStorageManager.updateSectionStockList(sectionKey, stockList);
     }
 
     public void deleteStockItemByIndex(int position) {
         stockList = PreferenceStorageManager.deleteStockItemFromFavorite(stockList.get(position).stockTicker);
     }
 
-    public void updateStockItem(final int index, final String stockName, final String stockPrice,
-                                final String stockPriceChange, final @ColorInt int stockChangeColor,
-                                @DrawableRes final int stockPriceChangeIcon, final String stockShares) {
+    public void updateStockItem(final int index, final String stockPrice, final String stockPriceChange,
+                                final @ColorInt int stockChangeColor,
+                                @DrawableRes final int stockPriceChangeIcon) {
         StockItem stockItem = stockList.get(index);
 
-        stockItem.stockName = stockName;
         stockItem.stockPrice = stockPrice;
         stockItem.stockPriceChange = stockPriceChange;
         stockItem.stockChangeColor = stockChangeColor;
         stockItem.stockPriceChangeIcon = stockPriceChangeIcon;
-        stockItem.updateStockSharesAndInfo(stockShares);
     }
 
     public int findIndexOfStockByTicker(String ticker) {
@@ -160,4 +158,6 @@ public class HomeSection extends Section {
         this.stockList.clear();
         this.stockList.addAll(newList);
     }
+
+    public static class stockItemPriceUpdate { }
 }
