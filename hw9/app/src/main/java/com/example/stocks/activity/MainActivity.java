@@ -12,12 +12,8 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
@@ -44,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private Handler handler;
     private AutoSuggestAdapter autoSuggestAdapter;
+    private static boolean hasClickedSuggestion = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,45 +73,30 @@ public class MainActivity extends AppCompatActivity {
         autoCompleteTextView.setMaxLines(1);
         autoCompleteTextView.setAdapter(autoSuggestAdapter);
 
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                if (query.equals("aapl")) {
-//                    Toast.makeText(MainActivity.this, "Item:", Toast.LENGTH_SHORT).show();
-//                    return true;
-//                }
-//                Log.e(TAG, "onQueryTextSubmit: " + autoSuggestAdapter.getSuggestionList() );
-//                Log.e(TAG, "onQueryTextSubmit: haha");
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                Log.e(TAG, "onQueryTextChange: " + autoSuggestAdapter.getSuggestionList() );
-//                return false;
-//            }
-//
-//        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                if (hasClickedSuggestion) {
+                    return false;
+                } else {
+                    String errorMsg = "You have to choose one of the suggestions!";
+                    Toast.makeText(MainActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            }
 
-//        autoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView v, int actionId, KeyEvent keyEvent) {
-//                Log.e(TAG, "onEditorAction: out");
-//                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
-//                        (keyEvent != null && KeyEvent.KEYCODE_ENTER == keyEvent.getKeyCode()
-//                                && keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
-//                    Log.e(TAG, "onEditorAction: inner");
-//                    return true;
-//                }
-//                return true;
-//            }
-//        });
-
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
         // listener to search view on dropdown item clicked
         autoCompleteTextView.setOnItemClickListener(
                 (parent, view, position, id) -> {
                     searchView.setQuery(autoSuggestAdapter.getItem(position), false);
+                    hasClickedSuggestion = true;
                 }
         );
 
@@ -128,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 handler.removeMessages(TRIGGER_AUTO_COMPLETE);
                 handler.sendEmptyMessageDelayed(TRIGGER_AUTO_COMPLETE, AUTO_COMPLETE_DELAY);
+                hasClickedSuggestion = false;
             }
 
             @Override
