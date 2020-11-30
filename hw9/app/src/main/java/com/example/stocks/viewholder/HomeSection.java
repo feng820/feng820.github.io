@@ -24,7 +24,7 @@ public class HomeSection extends Section {
         void onItemArrowClicked(String ticker);
     }
 
-    static class StockItemUpdate { }
+    public static class StockItemUpdate { }
 
     private List<StockItem> stockList;
     private final ClickListener clickListener;
@@ -102,7 +102,6 @@ public class HomeSection extends Section {
                                      final List<Object> payloads) {
         final StockItemViewHolder stockItemViewHolder = (StockItemViewHolder) holder;
         final StockItem stockItem = stockList.get(position);
-
         for (Object obj : payloads) {
             if (obj instanceof StockItemUpdate) {
                 stockItemViewHolder.stockInfoView.setText(stockItem.stockInfo);
@@ -158,6 +157,4 @@ public class HomeSection extends Section {
         this.stockList.clear();
         this.stockList.addAll(newList);
     }
-
-    public static class stockItemPriceUpdate { }
 }

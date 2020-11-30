@@ -176,11 +176,11 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
                 SectionAdapter portfolioSectionAdapter = sectionedAdapter.getAdapterForSection(portfolioSection);
                 SectionAdapter favoriteSectionAdapter = sectionedAdapter.getAdapterForSection(favoriteSection);
 
-                portfolioSectionAdapter.notifyAllItemsChanged(new HomeSection.stockItemPriceUpdate());
+                portfolioSectionAdapter.notifyAllItemsChanged(new HomeSection.StockItemUpdate());
                 double latestNetWorth = latestStockRevenue + Double.parseDouble(PreferenceStorageManager.getUninventedCash());
-                double roundOffNetWorth = Math.round(latestNetWorth * 100.0) / 100.0;
+                double roundOffNetWorth = round(latestNetWorth);
                 portfolioSectionAdapter.notifyHeaderChanged(String.valueOf(roundOffNetWorth));
-                favoriteSectionAdapter.notifyAllItemsChanged(new HomeSection.stockItemPriceUpdate());
+                favoriteSectionAdapter.notifyAllItemsChanged(new HomeSection.StockItemUpdate());
             }
 
             @Override
@@ -253,8 +253,9 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
             String price = obj.get("price") == null ? defaultPrice : String.valueOf(obj.get("price"));
 
             double changeDouble = Double.parseDouble(change);
+            double priceDouble = round(Double.parseDouble(price));
 
-            item.stockPrice = price;
+            item.stockPrice = String.valueOf(priceDouble);
             item.stockPriceChange = String.valueOf(Math.abs(changeDouble));
 
             if (changeDouble > 0) {
@@ -339,5 +340,9 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
     public void onPause() {
         handler.removeCallbacks(stockPriceUpdateRunnable);
         super.onPause();
+    }
+
+    private double round(double num) {
+        return Math.round(num * 100.0) / 100.0;
     }
 }

@@ -199,7 +199,7 @@ public class StockDetailActivity extends AppCompatActivity {
                 String lowPrice = result.get("low") == null ? defaultPrice : String.valueOf(result.get("low"));
                 String bidPrice = result.get("bidPrice") == null ? defaultPrice : String.valueOf(result.get("bidPrice"));
                 String openPrice = result.get("open") == null ? defaultPrice : String.valueOf(result.get("open"));
-                String midPrice = (result.get("mid") == null || result.get("mid").equals("-"))? defaultPrice : String.valueOf(result.get("mid"));
+                String midPrice = (result.get("mid") == null || String.valueOf(result.get("mid")).equals("-"))? defaultPrice : String.valueOf(result.get("mid"));
                 String highPrice = result.get("high") == null ? defaultPrice : String.valueOf(result.get("high"));
                 String volume = result.get("volume") == null ? defaultPrice : String.valueOf(result.get("volume"));
 
@@ -228,19 +228,19 @@ public class StockDetailActivity extends AppCompatActivity {
                     stockItem.stockChangeColor = StockDetailActivity.this.getColor(R.color.grey);
                 }
 
-                stockItem.stockPrice = currentPrice;
-                stockItem.stockPriceChange = String.valueOf(change);
+                stockItem.stockPrice = round(currentPrice);
+                stockItem.stockPriceChange = round(String.valueOf(change));
 
-                String headerPrice = "$" + currentPrice;
+                String headerPrice = "$" + round(currentPrice);
                 changeView.setText(changeText);
                 priceView.setText(headerPrice);
 
-                currentPrice = "Current Price: " + currentPrice;
-                lowPrice = "Low: " + lowPrice;
-                bidPrice = "Bid Price: " + bidPrice;
-                openPrice = "OpenPrice: " + openPrice;
-                midPrice = "Mid: " + midPrice;
-                highPrice = "High: " + highPrice;
+                currentPrice = "Current Price: " + round(currentPrice);
+                lowPrice = "Low: " + round(lowPrice);
+                bidPrice = "Bid Price: " + round(bidPrice);
+                openPrice = "OpenPrice: " + round(openPrice);
+                midPrice = "Mid: " + round(midPrice);
+                highPrice = "High: " + round(highPrice);
                 formattedVolume = "Volume: " + formattedVolume;
 
                 currentPriceView.setText(currentPrice);
@@ -547,5 +547,9 @@ public class StockDetailActivity extends AppCompatActivity {
         }
         portfolioFirstLine.setText(firstLineText);
         portfoliosSecondLine.setText(secondLineText);
+    }
+
+    private String round(String num) {
+        return String.valueOf(Math.round(Double.parseDouble(num) * 100.0) / 100.0);
     }
 }

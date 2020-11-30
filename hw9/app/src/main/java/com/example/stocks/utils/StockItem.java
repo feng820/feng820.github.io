@@ -64,7 +64,14 @@ public class StockItem{
 
     private String formatShares(String shares) {
         double sharesDouble = Double.parseDouble(shares);
+        if (sharesDouble < 1) {
+            return sharesDouble + " Share";
+        }
+
         if ((sharesDouble % 1) == 0) {
+            if (sharesDouble == 1) {
+                return sharesDouble + " Share";
+            }
             double roundOff = Math.round(sharesDouble * 10.0) / 10.0;
             return roundOff + " Shares";
         } else {

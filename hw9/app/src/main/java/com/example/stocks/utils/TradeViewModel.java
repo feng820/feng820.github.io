@@ -1,6 +1,5 @@
 package com.example.stocks.utils;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.databinding.BaseObservable;
@@ -42,7 +41,7 @@ public class TradeViewModel extends BaseObservable {
                 try {
                     double amount = Double.parseDouble(value);
                     double price = Double.parseDouble(currentPrice);
-                    product = String.valueOf(amount * price);
+                    product = String.valueOf(Math.round(amount * price * 100.0) / 100.0);
                 } catch (NumberFormatException e) {
                     Log.e(TAG, "setTradeAmount: Invalid input");
                 }
