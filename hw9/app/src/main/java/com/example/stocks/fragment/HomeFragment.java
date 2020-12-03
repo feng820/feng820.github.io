@@ -97,7 +97,7 @@ public class HomeFragment extends Fragment implements HomeSection.ClickListener 
     }
 
     @Override
-    public void onItemArrowClicked(String ticker) {
+    public void onStockItemClicked(String ticker) {
         Intent intent = new Intent(getContext(), StockDetailActivity.class);
         intent.putExtra("ticker", ticker);
         getContext().startActivity(intent);

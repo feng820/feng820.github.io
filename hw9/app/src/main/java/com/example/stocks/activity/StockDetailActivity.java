@@ -527,7 +527,6 @@ public class StockDetailActivity extends AppCompatActivity {
 
     private void makeToast(String msg) {
         Toast toast = Toast.makeText(StockDetailActivity.this, msg, Toast.LENGTH_SHORT);
-//        toast.getView().setBackgroundColor(StockDetailActivity.this.getColor(R.color.white));
         toast.show();
     }
 
